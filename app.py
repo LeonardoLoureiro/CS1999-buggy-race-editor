@@ -10,6 +10,15 @@ DATABASE_FILE = "database.db"
 DEFAULT_BUGGY_ID = "1"
 BUGGY_RACE_SERVER_URL = "https://rhul.buggyrace.net"
 
+
+#------------------------------------------------------------
+# the poster page
+#------------------------------------------------------------
+@app.route('/poster')
+def poster():
+   return render_template('poster.html')
+
+
 #------------------------------------------------------------
 # the index page
 #------------------------------------------------------------
