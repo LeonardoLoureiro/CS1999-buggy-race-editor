@@ -32,20 +32,41 @@
 <!-- task you attempted.                                                          -->
 
 <section class="cs1999-tasks">
+    <div class="task">
+        <h2>0-GET</h2>
+        <p>
+            I forked the repo on GitHub and then installed VSCode so I could edit and keep track of changes,
+            after correcting an error I was able to access the source code.
+        </p>
+        <p>
+            Once I installed VSCode and ran the automated file given to me, unfortunately I kept getting an error
+            saying that the connection could not be established to the linux server. After digging aroudn in VSCode logs, 
+            I noticed that an error kept popping up about a file not existing. I saw the path it kept trying to
+            access, the program wanted to access and/or create an ssh key. So I created an empty 'config' file 
+            on my local '.ssh' folder and added this path to VSCode's settings. This then allowed me to login 
+            into the linux server after entering my password.
+        </p>
+    </div>
 
-  <div class="task">
-    <h2>0-GET</h2>
-    <p>
-      I forked the repo on GitHub and then used <code>git clone</code> to make a local copy.
-    </p>
-    <p>
-      Once the repo was on my own machine I was able to commit changes to version control
-      as I went along, and I pushed back up to my GitHub repo at the end of each day.
-      I followed GitHub's instructions and set up a SSH key so I didn't need to enter
-      username and password every time I pushed.
-    </p>
-  </div>
+    <div class="task">
+        <h2>0-RUN Get app running and view it in a browser</h2>
+        <p>
+            I installed the requirements, then ran the 'app.py' file.
+        </p>
+        <p>
+            Once I was able to access the source code, I could then install the necessary requirements Python needed in
+            order to run the entire app. Installation was straightforward and ran into no errors. Once that was done,
+            I was able to run the 'app.py' file successfully and was able to display the webserver in my own browser. 
+        </p>
+    </div>
 
+    <div class="task">
+        <h2>0-CHANGE Make a change to a template and see it appear</h2>
+        <p>
+            I added a a button to the home webpage to redirect to the page of this 'poster' and the 'info' page. 
+            I was then able to make my first commit and push it to the my GitHub repo.
+        </p>
+    </div>
 
 <!-- this closes the section: keep it in! -->
 </section>
