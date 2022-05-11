@@ -50,8 +50,27 @@ def create_buggy():
 
         ## VARS ##
         qty_wheels = request.form['qty_wheels']
+        power_units = request.form['power_units']
         flag_color = request.form['flag_color']
+        power_type = request.form['power_type']
+        aux_power_type = request.form['aux_power_type']
+        aux_power_units = request.form['aux_power_units']
+        hamster_booster = request.form['hamster_booster']
+        flag_pattern = request.form['flag_pattern']
+        flag_color_secondary = request.form['flag_color_secondary']
+        tyres = request.form['tyres']
+        qty_tyres = request.form['qty_tyres']
+        armour = request.form['armour']
+        attack = request.form['attack']
+        qty_attacks = request.form['qty_attacks']
+        fireproof = request.form['fireproof']
+        insulated = request.form['insulated']
+        antibiotic = request.form['antibiotic']
+        banging = request.form['banging']
+        algo = request.form['algo']
         ## /VARS ##
+
+        print(algo)
         
         # Said VARS can now be added onto the database with their relative
         # JSON names.
@@ -65,10 +84,112 @@ def create_buggy():
                     (qty_wheels, DEFAULT_BUGGY_ID)
                 )
 
+                # power units
+                cur.execute(
+                    "UPDATE buggies set qty_wheels=? WHERE id=?",
+                    (power_units, DEFAULT_BUGGY_ID)
+                )
+
                 # colour of the buggy's flag
                 cur.execute(
                     "UPDATE buggies set flag_color=? WHERE id=?",
                     (flag_color, DEFAULT_BUGGY_ID)
+                )
+                
+                # Power Type
+                cur.execute(
+                    "UPDATE buggies set power_type=? WHERE id=?",
+                    (power_type, DEFAULT_BUGGY_ID)
+                )
+
+                # Aux Power Type
+                cur.execute(
+                    "UPDATE buggies set aux_power_type=? WHERE id=?",
+                    (aux_power_type, DEFAULT_BUGGY_ID)
+                )
+
+                # Aux Power Units
+                cur.execute(
+                    "UPDATE buggies set aux_power_units=? WHERE id=?",
+                    (aux_power_units, DEFAULT_BUGGY_ID)
+                )
+
+                # Hamster Booster
+                cur.execute(
+                    "UPDATE buggies set hamster_booster=? WHERE id=?",
+                    (hamster_booster, DEFAULT_BUGGY_ID)
+                )
+
+                # Flag Pattern
+                cur.execute(
+                    "UPDATE buggies set flag_pattern=? WHERE id=?",
+                    (flag_pattern, DEFAULT_BUGGY_ID)
+                )
+
+                # Flag Color Secondary
+                cur.execute(
+                    "UPDATE buggies set flag_color_secondary=? WHERE id=?",
+                    (flag_color_secondary, DEFAULT_BUGGY_ID)
+                )
+
+                # Tyres
+                cur.execute(
+                    "UPDATE buggies set tyres=? WHERE id=?",
+                    (tyres, DEFAULT_BUGGY_ID)
+                )
+
+                # Number of Tyres
+                cur.execute(
+                    "UPDATE buggies set qty_tyres=? WHERE id=?",
+                    (qty_tyres, DEFAULT_BUGGY_ID)
+                )
+
+                # Armour
+                cur.execute(
+                    "UPDATE buggies set armour=? WHERE id=?",
+                    (armour, DEFAULT_BUGGY_ID)
+                )
+
+                # Attack
+                cur.execute(
+                    "UPDATE buggies set attack=? WHERE id=?",
+                    (attack, DEFAULT_BUGGY_ID)
+                )
+
+                # Number of Attacks
+                cur.execute(
+                    "UPDATE buggies set qty_attacks=? WHERE id=?",
+                    (qty_attacks, DEFAULT_BUGGY_ID)
+                )
+
+                # Fireproof
+                cur.execute(
+                    "UPDATE buggies set fireproof=? WHERE id=?",
+                    (fireproof, DEFAULT_BUGGY_ID)
+                )
+
+                # Insulated
+                cur.execute(
+                    "UPDATE buggies set insulated=? WHERE id=?",
+                    (insulated, DEFAULT_BUGGY_ID)
+                )
+
+                # Antibiotic
+                cur.execute(
+                    "UPDATE buggies set antibiotic=? WHERE id=?",
+                    (antibiotic, DEFAULT_BUGGY_ID)
+                )
+
+                # Banging
+                cur.execute(
+                    "UPDATE buggies set banging=? WHERE id=?",
+                    (banging, DEFAULT_BUGGY_ID)
+                )
+
+                # Algo
+                cur.execute(
+                    "UPDATE buggies set algo=? WHERE id=?",
+                    (algo, DEFAULT_BUGGY_ID)
                 )
 
 
