@@ -18,6 +18,13 @@ BUGGY_RACE_SERVER_URL = "https://rhul.buggyrace.net"
 def poster():
    return render_template('poster.html')
 
+#------------------------------------------------------------
+# INFO page
+#------------------------------------------------------------
+@app.route('/info')
+def info():
+   return render_template('info.html')
+
 
 #------------------------------------------------------------
 # the index page
@@ -37,14 +44,34 @@ def create_buggy():
         return render_template("buggy-form.html")
     elif request.method == 'POST':
         msg=""
+
+        # Variable which are requested from the form and assigned as variables,
+        # which can then be pushed onto the database
+
+        ## VARS ##
         qty_wheels = request.form['qty_wheels']
+        flag_color = request.form['flag_color']
+        ## /VARS ##
+        
+        # Said VARS can now be added onto the database with their relative
+        # JSON names.
         try:
             with sql.connect(DATABASE_FILE) as con:
                 cur = con.cursor()
+
+                # number of wheels
                 cur.execute(
                     "UPDATE buggies set qty_wheels=? WHERE id=?",
                     (qty_wheels, DEFAULT_BUGGY_ID)
                 )
+
+                # colour of the buggy's flag
+                cur.execute(
+                    "UPDATE buggies set flag_color=? WHERE id=?",
+                    (flag_color, DEFAULT_BUGGY_ID)
+                )
+
+
                 con.commit()
                 msg = "Record successfully saved"
         except:

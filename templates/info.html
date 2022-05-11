@@ -2,13 +2,29 @@
 
 {% block content %}
 
-  <h1>Updated Buggy</h1>
+  <h1>
+    About CS1999 buggy races
+  </h1>
+  
+  <h3>
+    This is the race-buggy server for the RHUL Foundation Year Computer Science project
+  </h3>
+
+  <sub>
+    (CS1999 is a course number, not a date).
+  </sub>
 
   <p>
-    {{ msg }}
+    The project requires you to develop a separate web app using Python and Flask 
+    that lets you edit your own buggy. When you've got that working, you can enter your buggy 
+    into the races that happen on this server.  
   </p>
+
   <p>
-    <a href="/" class="button">home</a>
+    The server only accepts valid buggies in JSON format, so really the project is testing your 
+    understanding of how things like data-based web apps work. The race results are just for fun... 
+    but because you can't enter the race with bad data, 
+    they're your incentive to get your editor working.
   </p>
 
 {% endblock %}

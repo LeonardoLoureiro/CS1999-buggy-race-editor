@@ -5,9 +5,24 @@
   <h1>Make buggy</h1>
 
   <form action="/new" method="post">
-    <label for="qty_wheels">Number of wheels:</label>
-    <input type="text" name="qty_wheels" />
+    <table>
+    <tr>
+      <th>
+        <label for="qty_wheels">Number of wheels:</label>
+        <input type="number" name="qty_wheels" />
+      </th>
+    </tr>
+
+    <tr>
+      <th>
+        <label for="flag_color">Colour of flag:</label>
+        <input type="text" name="flag_color" />
+      </th>
+    </tr>
+    </table>
+
     <input type="submit" class="button">
+  
   </form>
 
   <p>
