@@ -63,14 +63,15 @@ def create_buggy():
         armour = request.form['armour']
         attack = request.form['attack']
         qty_attacks = request.form['qty_attacks']
-        fireproof = request.form['fireproof']
-        insulated = request.form['insulated']
-        antibiotic = request.form['antibiotic']
-        banging = request.form['banging']
+
+        # boolean vals need to be treated differently due to the way HTML uses checkboxes...
+        fireproof = True if request.form.get('fireproof') == "on" else False
+        insulated = True if request.form.get('insulated') == "on" else False
+        antibiotic = True if request.form.get('antibiotic') == "on" else False
+        banging = True if request.form.get('banging') == "on" else False
+
         algo = request.form['algo']
         ## /VARS ##
-
-        print(algo)
         
         # Said VARS can now be added onto the database with their relative
         # JSON names.
