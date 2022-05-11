@@ -6,19 +6,233 @@
 
   <form action="/new" method="post">
     <table>
-    <tr>
-      <th>
-        <label for="qty_wheels">Number of wheels:</label>
-        <input type="number" name="qty_wheels" />
-      </th>
-    </tr>
 
-    <tr>
-      <th>
-        <label for="flag_color">Colour of flag:</label>
-        <input type="text" name="flag_color" />
-      </th>
-    </tr>
+      <tr>
+        <th>
+          <label for="qty_wheels">Number of Wheels:</label>
+        </th>
+        <th>
+          <input type="number" name="qty_wheels" step ="1" min="0" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="power_type">Power Type:</label>
+        </th>
+        <th>
+          <select name="power_type">  
+            <option value="petrol">Petrol</option>
+            <option value="fusion">Fusion</option>
+            <option value="steam">Steam</option>
+            <option value="bio">Bio</option>
+            <option value="electric">Electric</option>
+            <option value="rocket">Rocket</option>
+            <option value="hamster">Hamster</option>
+            <option value="thermo">Thermo</option>
+            <option value="solar">Solar</option>
+            <option value="wind">Wind</option>
+          </select>
+        </th>
+      </tr>
+      
+      <tr>
+        <th>
+          <label for="power_units">Number of Wheels:</label>
+        </th>
+        <th>
+          <input type="number" name="power_units" step ="1" min="1" />
+        </th>
+      </tr>
+
+      <tr>
+        <th>
+          <label for="aux_power_type">Aux Power Type:</label>
+        </th>
+        <th>
+          <select name="aux_power_type">  
+            <option value="petrol">Petrol</option>
+            <option value="fusion">Fusion</option>
+            <option value="steam">Steam</option>
+            <option value="bio">Bio</option>
+            <option value="electric">Electric</option>
+            <option value="rocket">Rocket</option>
+            <option value="hamster">Hamster</option>
+            <option value="thermo">Thermo</option>
+            <option value="solar">Solar</option>
+            <option value="wind">Wind</option>
+          </select>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="aux_power_units">Aux Power Units:</label>
+        </th>
+        <th>
+          <input type="text" name="aux_power_units" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="hamster_booster">Hamster Booster:</label>
+        </th>
+        <th>
+          <input type="text" name="hamster_booster" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="flag_pattern">Flag Pattern:</label>
+        </th>
+        <th>
+          <select name="flag_pattern">  
+            <option value="plain">Plain</option>
+            <option value="vstripe">Vstripe</option>
+            <option value="hstripe">Hstripe</option>
+            <option value="dstripe">Dstripe</option>
+            <option value="checker">Checker</option>
+            <option value="spot">Spot</option>
+          </select>
+        </th>
+      </tr>
+
+      <tr>
+        <th>
+          <label for="flag_color">Flag color:</label>
+        </th>
+        <th>
+          <input type="text" name="flag_color" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="flag_color_secondary">Flag Color Secondary:</label>
+        </th>
+        <th>
+          <input type="text" name="flag_color_secondary" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="tyres">Tyres:</label>
+        </th>
+        <th>
+          <select name="tyres">
+            <option value="knobbly">Knobbly</option>
+            <option value="slick">Slick</option>
+            <option value="steelband">Steelband</option>
+            <option value="reactive">Reactive</option>
+            <option value="maglev">Maglev</option>
+          </select>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="qty_tyres">Number of Tyres:</label>
+        </th>
+        <th>
+          <input type="text" name="qty_tyres" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="armour">Armour:</label>
+        </th>
+        <th>
+          <select name="armour">
+            <option value="none">None</option>
+            <option value="wood">Wood</option>
+            <option value="aluminium">Aluminium</option>
+            <option value="thinsteel">Thinsteel</option>
+            <option value="thicksteel">Thicksteel</option>
+            <option value="titanium">Titanium</option>
+          </select>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="attack">Attack:</label>
+        </th>
+        <th>
+          <select name="attack">
+            <option value="none">None</option>
+            <option value="spike">Spike</option>
+            <option value="flame">Flame</option>
+            <option value="charge">Charge</option>
+            <option value="biohazard">Biohazard</option>
+          </select>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="qty_attacks">Number of Attacks:</label>
+        </th>
+        <th>
+          <input type="number" name="qty_attacks" step ="1" min="0" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="fireproof">Fireproof:</label>
+        </th>
+        <th>
+          <input type="text" name="fireproof" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="insulated">Insulated:</label>
+        </th>
+        <th>
+          <input type="text" name="insulated" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="antibiotic">Antibiotic:</label>
+        </th>
+        <th>
+          <input type="text" name="antibiotic" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="banging">Banging:</label>
+        </th>
+        <th>
+          <input type="text" name="banging" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="algo">Algo:</label>
+        </th>
+        <th>
+          <select name="algo">
+            <option value="defensive">Defensive</option>
+            <option value="steady">Steady</option>
+            <option value="offensive">Offensive</option>
+            <option value="titfortat">Tit-4-tat</option>
+            <option value="random">Random</option>
+            <option value="buggy">Buggy</option>
+          </select>
+        </th>
+      </tr>
+
     </table>
 
     <input type="submit" class="button">
