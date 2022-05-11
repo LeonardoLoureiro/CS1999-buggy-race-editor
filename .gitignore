@@ -139,3 +139,6 @@ dmypy.json
 
 # vim swap files
 *.swp
+
+# just my notes
+NOTES.txt
