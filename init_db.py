@@ -43,7 +43,7 @@ connection.execute("""
     insulated             BOOLEAN DEFAULT FALSE,
     antibiotic            BOOLEAN DEFAULT FALSE,
     banging               BOOLEAN DEFAULT FALSE,
-    algo                  VARCHAR(20) DEFAULT 'steady',
+    algo                  VARCHAR(20) DEFAULT 'steady'
   )
 
 """)
