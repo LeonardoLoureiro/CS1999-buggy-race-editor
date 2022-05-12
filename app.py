@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify
 import os
 import sqlite3 as sql
 
+import scripts.scrapper as scrapper
+
 # app - The flask application where all the magical things are configured.
 app = Flask(__name__)
 
@@ -24,6 +26,17 @@ def poster():
 @app.route('/info')
 def info():
    return render_template('info.html')
+
+#------------------------------------------------------------
+# Prices page
+#------------------------------------------------------------
+@app.route('/specs')
+def specs():
+    tables = scrapper.get_tables()
+
+    return render_template('specs.html', specs=tables)
+
+
 
 
 #------------------------------------------------------------
