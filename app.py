@@ -34,7 +34,14 @@ def info():
 def specs():
     tables = scrapper.get_tables()
 
-    return render_template('specs.html', specs=tables)
+    # get info from db so user can compare against info from tables
+    con = sql.connect(DATABASE_FILE)
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("SELECT * FROM buggies")
+    record = cur.fetchone();
+
+    return render_template('specs.html', specs=tables, buggy=record)
 
 
 

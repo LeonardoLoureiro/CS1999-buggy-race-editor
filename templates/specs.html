@@ -2,62 +2,94 @@
 
 {% block content %}
 
-  <h1>Prices for each attribute</h1>
+<style>
+  .spec h3.spec-title {
+    font: Verdana ;
+    
+  }
 
-  <div name="spec">
-    <h3>
-      Types of motive power
-    </h3>
+  .spec .records h5.records{
+    display: inline-block ;
+    vertical-align:baseline;
+  }
 
-    <div class="specs-table">
-      {{ specs[0] | safe }}
-    </div>
+</style>
+
+<h1>Prices for each attribute</h1>
+
+<div class="spec">
+  <h3 class="spec-title"> Types of motive power </h3>
+
+  <div class="records">
+    <p> <b> Your buggy: </b> <i> {{ buggy['power_type'] }} </i> </p>
   </div>
 
-  <div name="spec">
-    <h3>
-      Types of tyre
-    </h3>
-
-    <div class="specs-table">
-      {{ specs[1] | safe }}
-    </div>
+  <div class="specs-table">
+    {{ specs[0] | safe }}
   </div>
 
-  <div name="spec">
-    <h3>
-      Types of armour
-    </h3>
-
-    <div class="specs-table">
-      {{ specs[2] | safe }}
-    </div>
-  </div>
-
-  <div name="spec">
-    <h3>
-      Types of offensive capability
-    </h3>
-
-    <div class="specs-table">
-      {{ specs[3] | safe }}
-    </div>
-  </div>
-
-  <div name="spec">
-    <h3>
-      Types of race computer algorithm
-    </h3>
-
-    <div class="specs-table">
-      {{ specs[4] | safe }}
-    </div>
-  </div>
-
-  </div>
   
-  <p>
-    <a href="/" class="button">home</a>
-  </p>
+</div>
+
+<div class="spec">
+  <h3 class="spec-title">
+    Types of tyre
+  </h3>
+
+  <div class="records">
+    <p> <b> Your buggy: </b>  <i> {{ buggy['tyres'] }} </i> </p>
+  </div>
+
+  <div class="specs-table">
+    {{ specs[1] | safe }}
+  </div>
+</div>
+
+<div class="spec">
+  <h3 class="spec-title">
+    Types of armour
+  </h3>
+
+  <div class="records">
+    <p> <b> Your buggy: </b> <i> {{ buggy['armour'] }} </i> </p>
+  </div>
+
+  <div class="specs-table">
+    {{ specs[2] | safe }}
+  </div>
+</div>
+
+<div class="spec">
+  <h3 class="spec-title">
+    Types of offensive capability
+  </h3>
+
+  <div class="records">
+    <p> <b> Your buggy: </b> <i> {{ buggy['attack'] }} </i> </p>
+  </div>
+
+  <div class="specs-table">
+    {{ specs[3] | safe }}
+  </div>
+</div>
+
+<div class="spec">
+  <h3 class="spec-title">
+    Types of race computer algorithm
+  </h3>
+
+  <div class="records">
+    <p> <b> Your buggy: </b> <i> {{ buggy['algo'] }} </i> </p>
+  </div>
+
+  <div class="specs-table">
+    {{ specs[4] | safe }}
+  </div>
+</div>
+
+
+<p>
+  <a href="/" class="button">home</a>
+</p>
 
 {% endblock %}
