@@ -77,16 +77,37 @@
     </div>
 
     <div class="task">
-        <h2>1-ADD Add more data to the form</h2>
-        <p>
-          <!-- sentence on _how_ you fixed it -->
-        </p>
-        <p>
-          <!-- sentence(s) on anything interesting/incomplete you did -->
-        </p>
-      </div>
+      <h2>1-TEMPLATE Add a new template to the app</h2>
+      <p>
+        I added a button to home page which redirected to new 'info.html'. This page is an almagamation of all tables
+        in the buggy server INFO page, the app scrapes the page in real time and renders it 'on-the-fly'. To do this,
+        I installed the BeautifulSoup python library which is used to parse and navitage HTML files/webpages. 
+        After only scraping sections of the webpage and removing the first (as this table only shows info regarding
+        defaul values which were not needed). After which, I could then pass the tables as an argument to 'render_template'.
+        But before they could be rendered, I had to edit the file stating that they were 'safe', as Flask, by default, assumes 
+        all texts are 'unsafe' and not to be rendered as HTML, instead showing it as text.
+      </p>
+    </div>
 
-      <div class="task">
+    <div class="task">
+        <h2>1-ADD Add more data to the form/1-VALID Add basic data validation</h2>
+        <p>
+          I made the form as a table so that I could add rows for user to input information. With each correspoding attribute,
+          I made sure the right type of data was being inupt, e.g., for integers I made sure to add to the HTMl 
+          page that the type was 'number' and could only add in steps of '1' - ensuring only integers could be used as input. 
+          Next, I also made sure to code in constraints, for example certain integers had to be at least 0 or 1, so I added a min attribute.
+          Or when the input could only be a selection, so I coded for only specific options avaiable, instead of simple adding a text box
+          through which incorrect inputs could be added. Of course, all of this is client-side form validation.
+        </p>
+        <p>
+          I was able to add further constratint which relate to another form input, the number of tyres needing to be equal to or greater than
+          the number of wheels. I was able to add this by adding javascript to the HTML file and running it when the submit button was
+          clicked. An error message window pops up if this constraint is not met.
+        </p>
+    </div>
+
+
+    <div class="task">
         <h2>
             1-VALID Add basic data validation
         </h2>
@@ -99,8 +120,9 @@
           <!-- sentence(s) on anything interesting/incomplete you did -->
         </p>  
     </div>
-      
-      <div class="task">
+
+    
+    <div class="task">
         <h2>
             1-STYLE Style your editor just how you like it
         </h2>
