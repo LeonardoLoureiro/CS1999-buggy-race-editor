@@ -17,6 +17,11 @@
 
   <h1>Make buggy</h1>
 
+  <p name="info">
+    Welcome! In this page you can customise your buggy with each attribute, do not worry, you do not have fill out 
+    <i>all</i> attributes,   
+  </p>
+
   <form name="buggyForm" action="/new" method="post">
     <table>
 
@@ -96,7 +101,7 @@
         </th>
       </tr>
     
-    <tr>
+      <tr>
         <th>
           <label for="flag_pattern">Flag Pattern:</label>
         </th>
@@ -121,7 +126,7 @@
         </th>
       </tr>
     
-    <tr>
+      <tr>
         <th>
           <label for="flag_color_secondary">Flag Color Secondary:</label>
         </th>
@@ -130,7 +135,7 @@
         </th>
       </tr>
     
-    <tr>
+      <tr>
         <th>
           <label for="tyres">Tyres:</label>
         </th>
@@ -145,7 +150,7 @@
         </th>
       </tr>
     
-    <tr>
+      <tr>
         <th>
           <label for="qty_tyres">Number of Tyres:</label>
         </th>
@@ -199,7 +204,7 @@
           <label for="fireproof">Fireproof:</label>
         </th>
         <th>
-          <input type="checkbox" name="fireproof" />
+          <input type="checkbox" name="fireproof" {% if bool_vals[0] %} checked="checked" {% endif %}/>
         </th>
       </tr>
     
@@ -208,7 +213,7 @@
           <label for="insulated">Insulated:</label>
         </th>
         <th>
-          <input type="checkbox" name="insulated" checked="checked" />
+          <input type="checkbox" name="insulated" {% if bool_vals[1] %} checked="checked" {% endif %}/>
         </th>
       </tr>
     
@@ -217,7 +222,7 @@
           <label for="antibiotic">Antibiotic:</label>
         </th>
         <th>
-          <input type="checkbox" name="antibiotic" />
+          <input type="checkbox" name="antibiotic" {% if bool_vals[2] %} checked="checked" {% endif %}/>
         </th>
       </tr>
     
@@ -226,7 +231,7 @@
           <label for="banging">Banging:</label>
         </th>
         <th>
-          <input type="checkbox" name="banging" />
+          <input type="checkbox" name="banging" {% if bool_vals[3] %} checked="checked" {% endif %}/>
         </th>
       </tr>
     

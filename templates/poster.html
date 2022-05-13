@@ -95,14 +95,9 @@
           I made the form as a table so that I could add rows for user to input information. With each correspoding attribute,
           I made sure the right type of data was being inupt, e.g., for integers I made sure to add to the HTMl 
           page that the type was 'number' and could only add in steps of '1' - ensuring only integers could be used as input. 
-          Next, I also made sure to code in constraints, for example certain integers had to be at least 0 or 1, so I added a min attribute.
-          Or when the input could only be a selection, so I coded for only specific options avaiable, instead of simple adding a text box
-          through which incorrect inputs could be added. Of course, all of this is client-side form validation.
         </p>
         <p>
-          I was able to add further constratint which relate to another form input, the number of tyres needing to be equal to or greater than
-          the number of wheels. I was able to add this by adding javascript to the HTML file and running it when the submit button was
-          clicked. An error message window pops up if this constraint is not met.
+          
         </p>
     </div>
 
@@ -113,11 +108,24 @@
         </h2>
         
         <p>
-          <!-- sentence on _how_ you fixed it -->
+          I added further in constraints to inputs in form, for example certain integers had to be at least 0 or 1, 
+          so I added a min HTML attribute. Or when the input could only be a selection, so I coded for only specific 
+          options avaiable, instead of simple adding a text box through which incorrect inputs could be added. 
+          Of course, all of this is client-side form validation.
         </p>
         
         <p>
-          <!-- sentence(s) on anything interesting/incomplete you did -->
+          I was able to add further constratint which relate to another form input, the number of tyres needing to be equal to or greater than
+          the number of wheels. I was able to add this by adding javascript to the HTML file and running it when the submit button was
+          clicked. An error message window pops up if this constraint is not met.
+
+          I then had to make sure that is an option was empty, then to simply not push anything for that specific attribute to the DB, otherwise
+          each time a space if left blank then it overwrites that attribute in the DB. But I then ran onto a problem: what about the
+          boolean values? You cannot leave a check box "empty", as this would register as False, thus what would happen if a user wanted to change
+          it from True ro false? If I put this code for the non-boolean values for booleans values then said variable would be 
+          set to True once and then not be able to change them. To fix this, when redering the HTML file, Python would pass these
+          values onto the HTML file and check them if DB passed true otherwise leave them alone, but ALWAYS being posted to DB.
+          
         </p>  
     </div>
 

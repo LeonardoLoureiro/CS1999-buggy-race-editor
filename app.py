@@ -81,7 +81,13 @@ def home():
 @app.route('/new', methods = ['POST', 'GET'])
 def create_buggy():
     if request.method == 'GET':
-        return render_template("buggy-form.html")
+        con = sql.connect(DATABASE_FILE)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute("SELECT fireproof, insulated, antibiotic, banging FROM buggies")
+        bools = cur.fetchone();
+
+        return render_template("buggy-form.html", bool_vals=bools)
     elif request.method == 'POST':
         msg=""
 
@@ -93,6 +99,9 @@ def create_buggy():
 
                 for att in ATTRIBUTES:
                     form_att = request.form[att]
+
+                    if form_att == "":
+                        continue
 
                     exec_str = "UPDATE buggies set %s=? WHERE id=?" % att
 
