@@ -93,7 +93,7 @@ def create_buggy():
         attack = request.form['attack']
         qty_attacks = request.form['qty_attacks']
 
-        # boolean vals need to be treated differently due to the way HTML uses checkboxes...
+        # boolean vals need to be treated differently due to the way HTML returns checkbox vals...
         fireproof = True if request.form.get('fireproof') == "on" else False
         insulated = True if request.form.get('insulated') == "on" else False
         antibiotic = True if request.form.get('antibiotic') == "on" else False
@@ -101,6 +101,11 @@ def create_buggy():
 
         algo = request.form['algo']
         ## /VARS ##
+
+        ## VAR TESTS ##
+        # print(qty_wheels)
+        ## /VAR TESTS ##
+
         
         # Said VARS can now be added onto the database with their relative
         # JSON names.
@@ -116,7 +121,7 @@ def create_buggy():
 
                 # power units
                 cur.execute(
-                    "UPDATE buggies set qty_wheels=? WHERE id=?",
+                    "UPDATE buggies set power_units=? WHERE id=?",
                     (power_units, DEFAULT_BUGGY_ID)
                 )
 
