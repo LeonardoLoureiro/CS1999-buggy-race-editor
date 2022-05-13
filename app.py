@@ -41,29 +41,68 @@ ATTRIBUTES_BOOL = [
 ]
 
 
+# Options given to users as a list for easier way to code IF code block in HTML edit page.
+# Since there are more than 1 multiple-choice attributes, it's best to implement it this 
+# instead of hardcoding, as this way if, in the future, there are more options to be added,
+# then this makes thins much easer. Plus, doing this dynamicall instead of hard-coding,
+# makes things less likely to be coded wrong.
+POWER_TYPE_OPS = [
+	"petrol",
+	"fusion",
+	"steam",
+	"bio",
+	"electric",
+	"rocket",
+	"hamster",
+	"thermo",
+	"solar",
+	"wind"
+]
 
-#------------------------------------------------------------
-# the poster page
-#------------------------------------------------------------
-@app.route('/poster')
-def poster():
-   return render_template('poster.html')
+FLAG_PATT = [
+	"plain",
+	"vstripe",
+	"hstripe",
+	"dstripe",
+	"checker",
+	"spot"
+]
 
-#------------------------------------------------------------
-# INFO/Prices page
-#------------------------------------------------------------
-@app.route('/info')
-def info():
-    tables = scrapper.get_tables()
+TYRES = [
+	"knobbly",
+	"slick",
+	"steelband",
+	"reactive",
+	"maglev"
+]
 
-    # get info from db so user can compare against info from tables
-    con = sql.connect(DATABASE_FILE)
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    cur.execute("SELECT * FROM buggies")
-    record = cur.fetchone();
+ARMOR = [
+	"none",
+	"wood",
+	"aluminium",
+	"thinsteel",
+	"thicksteel",
+	"titanium"
+]
 
-    return render_template('info.html', specs=tables, buggy=record)
+ATTACKS = [
+	"none",
+	"spike",
+	"flame",
+	"charge",
+	"biohazard",
+]
+
+AI = [
+	"defensive",
+	"steady",
+	"offensive",
+	"titfortat",
+	"random",
+	"buggy"
+]
+
+
 
 
 #------------------------------------------------------------
@@ -73,21 +112,31 @@ def info():
 def home():
     return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
 
+
 #------------------------------------------------------------
 # creating a new buggy:
 #  if it's a POST request process the submitted data
 #  but if it's a GET request, just show the form
 #------------------------------------------------------------
-@app.route('/new', methods = ['POST', 'GET'])
+@app.route('/edit', methods = ['POST', 'GET'])
 def create_buggy():
     if request.method == 'GET':
+        # get bool values from DB, so HTML 'knows' whether to check their respective checkboxes or not
         con = sql.connect(DATABASE_FILE)
         con.row_factory = sql.Row
         cur = con.cursor()
-        cur.execute("SELECT fireproof, insulated, antibiotic, banging FROM buggies")
-        bools = cur.fetchone();
+        cur.execute("SELECT * FROM buggies")
+        record = cur.fetchone();
 
-        return render_template("buggy-form.html", bool_vals=bools)
+        return render_template("buggy-form.html", 
+            power_type_ops=POWER_TYPE_OPS,
+            flag_patts=FLAG_PATT,
+            tyres=TYRES,
+            armor=ARMOR,
+            attacks=ATTACKS,
+            ai=AI,
+            vals=record)
+    
     elif request.method == 'POST':
         msg=""
 
@@ -131,6 +180,7 @@ def create_buggy():
             con.close()
         return render_template("updated.html", msg = msg)
 
+
 #------------------------------------------------------------
 # a page for displaying the buggy
 #------------------------------------------------------------
@@ -143,13 +193,47 @@ def show_buggies():
     record = cur.fetchone(); 
     return render_template("buggy.html", buggy = record)
 
+
+#------------------------------------------------------------
+# INFO/Prices page
+#------------------------------------------------------------
+@app.route('/info')
+def info():
+    tables = scrapper.get_tables()
+
+    # get info from db so user can compare against info from tables
+    con = sql.connect(DATABASE_FILE)
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("SELECT * FROM buggies")
+    record = cur.fetchone();
+
+    return render_template('info.html', specs=tables, buggy=record)
+
+
+#------------------------------------------------------------
+# the poster page
+#------------------------------------------------------------
+@app.route('/poster')
+def poster():
+   return render_template('poster.html')
+
+
+
+
+
+
+
+
+
+
 #------------------------------------------------------------
 # a placeholder page for editing the buggy: you'll need
 # to change this when you tackle task 2-EDIT
 #------------------------------------------------------------
-@app.route('/edit')
-def edit_buggy():
-    return render_template("buggy-form.html")
+# @app.route('/edit')
+# def edit_buggy():
+#     return render_template("buggy-form.html")
 
 #------------------------------------------------------------
 # You probably don't need to edit this... unless you want to ;)
