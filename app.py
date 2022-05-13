@@ -27,7 +27,6 @@ ATTRIBUTES = [
 	"armour",
 	"attack",
 	"qty_attacks",
-	
 	"algo"
 ]
  
@@ -81,8 +80,6 @@ def specs():
     record = cur.fetchone();
 
     return render_template('specs.html', specs=tables, buggy=record)
-
-
 
 
 #------------------------------------------------------------
