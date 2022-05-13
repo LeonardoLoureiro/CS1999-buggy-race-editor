@@ -2,7 +2,7 @@
 
 {% block content %}
 
-  <h1>Buggy</h1>
+  <h1>Your Buggy</h1>
 
   <table>
       <tr>
@@ -94,28 +94,29 @@
         <td> {{ buggy['qty_attacks'] }} </td>
       </tr>
 
-
+      <!--  Boolean vals are to be treated differently as, just leaving them by themselves like this will only display
+            0s and 1s, not very user-understanding-friendly (if such an adjective even exists) -->
       <tr>
-        <td>Fireproof:</td>
-        <td> {{ buggy['fireproof'] }} </td>
+        <td>Fireproof?</td>
+        <td> {{ "Yes" if buggy['fireproof'] else "No" }} </td>
       </tr>
 
 
       <tr>
-        <td>Insulated:</td>
-        <td> {{ buggy['insulated'] }} </td>
+        <td>Insulated?</td>
+        <td> {{ "Yes" if buggy['insulated'] else "No" }} </td>
       </tr>
 
 
       <tr>
-        <td>Antibiotic:</td>
-        <td> {{ buggy['antibiotic'] }} </td>
+        <td>Antibiotic?</td>
+        <td> {{ "Yes" if buggy['antibiotic'] else "No" }} </td>
       </tr>
 
 
       <tr>
-        <td>Banging:</td>
-        <td> {{ buggy['banging'] }} </td>
+        <td>Banging?</td>
+        <td> {{ "Yes" if buggy['banging'] else "No" }} </td>
       </tr>
 
 

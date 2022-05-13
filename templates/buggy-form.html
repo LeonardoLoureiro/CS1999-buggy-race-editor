@@ -2,9 +2,22 @@
 
 {% block content %}
 
+  <script type="text/javascript">
+    function valTyres() {
+      let wheels_num = document.forms["buggyForm"]["qty_wheels"].value ;
+      let tyre_num = document.forms["buggyForm"]["qty_tyres"].value ;
+
+      if (tyre_num < wheels_num) {
+        alert("Number of Tyres can only be equal to or greater than number of wheels.");
+        
+        return false ;
+      }
+    }
+  </script>
+
   <h1>Make buggy</h1>
 
-  <form action="/new" method="post">
+  <form name="buggyForm" action="/new" method="post">
     <table>
 
       <tr>
@@ -12,7 +25,7 @@
           <label for="qty_wheels">Number of Wheels:</label>
         </th>
         <th>
-          <input type="number" name="qty_wheels" step ="1" min="0" />
+          <input type="number" name="qty_wheels" step ="1" min="4" max="99"/>
         </th>
       </tr>
     
@@ -38,10 +51,10 @@
       
       <tr>
         <th>
-          <label for="power_units">Number of Wheels:</label>
+          <label for="power_units">Power units:</label>
         </th>
         <th>
-          <input type="number" name="power_units" step ="1" min="1" />
+          <input type="number" name="power_units" step ="1" min="1" max="99"/>
         </th>
       </tr>
 
@@ -70,7 +83,7 @@
           <label for="aux_power_units">Aux Power Units:</label>
         </th>
         <th>
-          <input type="number" name="aux_power_units" step ="1" min="0" />
+          <input type="number" name="aux_power_units" step ="1" min="0" max="99"/>
         </th>
       </tr>
     
@@ -79,11 +92,11 @@
           <label for="hamster_booster">Hamster Booster:</label>
         </th>
         <th>
-          <input type="number" name="hamster_booster" step ="1" min="1" />
+          <input type="number" name="hamster_booster" step ="1" min="1" max="99"/>
         </th>
       </tr>
     
-      <tr>
+    <tr>
         <th>
           <label for="flag_pattern">Flag Pattern:</label>
         </th>
@@ -108,7 +121,7 @@
         </th>
       </tr>
     
-      <tr>
+    <tr>
         <th>
           <label for="flag_color_secondary">Flag Color Secondary:</label>
         </th>
@@ -117,7 +130,7 @@
         </th>
       </tr>
     
-      <tr>
+    <tr>
         <th>
           <label for="tyres">Tyres:</label>
         </th>
@@ -132,12 +145,12 @@
         </th>
       </tr>
     
-      <tr>
+    <tr>
         <th>
           <label for="qty_tyres">Number of Tyres:</label>
         </th>
         <th>
-          <input type="number" name="qty_tyres" step ="1" min="1" />
+          <input type="number" name="qty_tyres" step ="1" min="1" max="99"/>
         </th>
       </tr>
     
@@ -177,7 +190,7 @@
           <label for="qty_attacks">Number of Attacks:</label>
         </th>
         <th>
-          <input type="number" name="qty_attacks" step ="1" min="0" />
+          <input type="number" name="qty_attacks" step ="1" min="0" max="99"/>
         </th>
       </tr>
     
@@ -235,7 +248,7 @@
 
     </table>
 
-    <input type="submit" class="button">
+    <input type="submit" onclick="valTyres()" class="button">
   
   </form>
 
