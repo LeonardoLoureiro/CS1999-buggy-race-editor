@@ -25,7 +25,16 @@ def poster():
 #------------------------------------------------------------
 @app.route('/info')
 def info():
-   return render_template('info.html')
+    tables = scrapper.get_tables()
+
+    # get info from db so user can compare against info from tables
+    con = sql.connect(DATABASE_FILE)
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("SELECT * FROM buggies")
+    record = cur.fetchone();
+
+    return render_template('info.html', specs=tables, buggy=record)
 
 #------------------------------------------------------------
 # Prices page

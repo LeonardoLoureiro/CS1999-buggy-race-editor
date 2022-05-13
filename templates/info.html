@@ -2,29 +2,94 @@
 
 {% block content %}
 
-  <h1>
-    About CS1999 buggy races
-  </h1>
+<style>
+  .spec h3.spec-title {
+    font: Verdana ;
+    
+  }
+
+  .spec .records h5.records{
+    display: inline-block ;
+    vertical-align:baseline;
+  }
+
+</style>
+
+<h1>Prices for each attribute</h1>
+
+<div class="spec">
+  <h3 class="spec-title"> Types of motive power </h3>
+
+  <div class="records">
+    <p> <b> Your buggy: </b> <i> {{ buggy['power_type'] }} </i> </p>
+  </div>
+
+  <div class="specs-table">
+    {{ specs[0] | safe }}
+  </div>
+
   
-  <h3>
-    This is the race-buggy server for the RHUL Foundation Year Computer Science project
+</div>
+
+<div class="spec">
+  <h3 class="spec-title">
+    Types of tyre
   </h3>
 
-  <sub>
-    (CS1999 is a course number, not a date).
-  </sub>
+  <div class="records">
+    <p> <b> Your buggy: </b>  <i> {{ buggy['tyres'] }} </i> </p>
+  </div>
 
-  <p>
-    The project requires you to develop a separate web app using Python and Flask 
-    that lets you edit your own buggy. When you've got that working, you can enter your buggy 
-    into the races that happen on this server.  
-  </p>
+  <div class="specs-table">
+    {{ specs[1] | safe }}
+  </div>
+</div>
 
-  <p>
-    The server only accepts valid buggies in JSON format, so really the project is testing your 
-    understanding of how things like data-based web apps work. The race results are just for fun... 
-    but because you can't enter the race with bad data, 
-    they're your incentive to get your editor working.
-  </p>
+<div class="spec">
+  <h3 class="spec-title">
+    Types of armour
+  </h3>
+
+  <div class="records">
+    <p> <b> Your buggy: </b> <i> {{ buggy['armour'] }} </i> </p>
+  </div>
+
+  <div class="specs-table">
+    {{ specs[2] | safe }}
+  </div>
+</div>
+
+<div class="spec">
+  <h3 class="spec-title">
+    Types of offensive capability
+  </h3>
+
+  <div class="records">
+    <p> <b> Your buggy: </b> <i> {{ buggy['attack'] }} </i> </p>
+  </div>
+
+  <div class="specs-table">
+    {{ specs[3] | safe }}
+  </div>
+</div>
+
+<div class="spec">
+  <h3 class="spec-title">
+    Types of race computer algorithm
+  </h3>
+
+  <div class="records">
+    <p> <b> Your buggy: </b> <i> {{ buggy['algo'] }} </i> </p>
+  </div>
+
+  <div class="specs-table">
+    {{ specs[4] | safe }}
+  </div>
+</div>
+
+
+<p>
+  <a href="/" class="button">home</a>
+</p>
 
 {% endblock %}
