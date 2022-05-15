@@ -4,11 +4,16 @@
     <meta charset="utf-8" />
     <link href="static/app.css?{{ range(1, 9999) | random }}" media="screen, projector, print" rel="stylesheet" type="text/css" />
   </head>
+
   <body>
     <div class="main-content">
 
-      {% block content %}{% endblock %}
+      {% include "sidebar.html" %}
 
+      <div id="content">
+        {% block content %}{% endblock %}
+      </div>
+      
     </div>
   </body>
 </html>

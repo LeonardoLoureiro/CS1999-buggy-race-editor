@@ -8,19 +8,12 @@ body {
   padding: 0;
   font-size: 1.2em;
   color: #000000;
-  background: repeating-linear-gradient(
-    45deg,
-    #ffffee,
-    #ffffee 2em,
-    #eeeeee 2em,
-    #eeeeee 4em
-  );
 }
 .main-content {
   min-height: 100vh;
-  padding: 1em;
+  /*padding: 1em;*/
   background: #ffffff;
-  margin: 0 0 0 3em;
+  margin-bottom: 2em ;
 }
 h1 {
   margin: 0 0 1em 0;
@@ -52,7 +45,7 @@ input.button {
 table {
   border: 1px solid #000000;
   border-collapse: collapse;
-  margin: 0 0 2em 0;
+  margin: 0em;
 }
 table td, table th {
   padding: 0.25em;
@@ -61,4 +54,55 @@ table td, table th {
 }
 .spacer {
   margin: 3em 0;
+}
+
+
+/* ## Custom CSS ## */
+
+/* INFO page */
+p.info {
+  font-family: 'Times New Roman', Times, serif;
+}
+/* /INFO page */
+
+/* sidebar/content divs */
+#sidebar {
+  display: table-cell ;
+  margin-left: 0% ;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #ffffee,
+    #ffffee 2em,
+    #eeeeee 2em,
+    #eeeeee 4em
+  )
+}
+
+#sidebar-buttons {
+  position: fixed ;
+  padding-top: 2% ;
+  text-align: center;
+}
+
+#sidebar-buttons a {
+  padding: 0.1em;
+  text-decoration: none;
+  font-size: 25px;
+  z-index: 1 ;
+  display: block;
+}
+
+#content {
+  display: table-cell;
+  padding-left: 1% ;
+  padding-right: 2% ;
+  padding-top: 1% ;
+	width: 85%;
+	vertical-align: top;
+}
+/* sidebar/content divs */
+
+#table-show-buggy {
+  margin-left: 0em ;
+  padding-left: 15%;
 }

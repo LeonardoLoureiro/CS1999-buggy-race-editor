@@ -191,6 +191,7 @@ def show_buggies():
     cur = con.cursor()
     cur.execute("SELECT * FROM buggies")
     record = cur.fetchone(); 
+    
     return render_template("buggy.html", buggy = record)
 
 
