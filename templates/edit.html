@@ -11,29 +11,16 @@
       {% endfor %}
   -->
 
-  <script type="text/javascript">
-    function valTyres() {
-      let wheels_num = document.forms["buggyForm"]["qty_wheels"].value ;
-      let tyre_num = document.forms["buggyForm"]["qty_tyres"].value ;
+<script type="text/javascript" src="static/form_validation.js"></script>
 
-      if (tyre_num < wheels_num) {
-        alert("Number of Tyres can only be equal to or greater than number of wheels.");
-        
-        return false ;
-      }
-    }
-  </script>
-
-
-
-<h1>Make buggy</h1>
+<h1>Edit your buggy</h1>
 
 <p name="info">
   Welcome! In this page you can customise your buggie's each attribute. Each field is already filled with saved options, 
-  edit them to update them. Have fun!
+  edit them and submit them to update the database. Have fun!
 </p>
 
-<form name="buggyForm" action="/edit" method="post">
+<form name="buggyForm" onsubmit="return main();" action="/edit" method="post">
   <table>
 
     <tr>
@@ -41,7 +28,7 @@
         <label for="qty_wheels">Number of Wheels:</label>
       </th>
       <th>
-        <input type="number" name="qty_wheels" value="{{vals[1]}}" step ="1" min="4" max="99"/>
+        <input type="number" name="qty_wheels" value="{{vals[1]}}" step ="2" min="4" max="99"/>
       </th>
     </tr>
   
@@ -164,7 +151,7 @@
         <label for="qty_tyres">Number of Tyres:</label>
       </th>
       <th>
-        <input type="number" name="qty_tyres" value="{{vals[11]}}" step ="1" min="1" max="99"/>
+        <input type="number" name="qty_tyres" value="{{vals[11]}}" step ="2" min="4" max="99"/>
       </th>
     </tr>
   

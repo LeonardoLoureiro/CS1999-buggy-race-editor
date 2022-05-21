@@ -63,6 +63,9 @@ table td, table th {
   border: 1px solid #999999;
   padding: 0.5rem;
 }
+table th {
+  text-align: center ;
+}
 .spacer {
   margin: 3em 0;
 }
@@ -140,6 +143,10 @@ div.choose {
 }
 
 .choose select {
-  width: 50px ; 
+  width: 80px ; 
   text-align: center ;
+}
+
+#select-butt {
+  float: inline-end;
 }

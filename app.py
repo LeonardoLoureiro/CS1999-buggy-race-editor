@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify
+from crypt import methods
+from flask import Flask, render_template, request, jsonify, redirect
 import os
 import sqlite3 as sql
 
@@ -47,6 +48,7 @@ ATTRIBUTES_BOOL = [
 # then this makes thins much easer. Plus, doing this dynamicall instead of hard-coding,
 # makes things less likely to be coded wrong.
 POWER_TYPE_OPS = [
+    "none",
 	"petrol",
 	"fusion",
 	"steam",
@@ -98,8 +100,7 @@ AI = [
 	"steady",
 	"offensive",
 	"titfortat",
-	"random",
-	"buggy"
+	"random"
 ]
 
 
@@ -109,8 +110,33 @@ AI = [
 # the index page
 #------------------------------------------------------------
 @app.route('/')
+@app.route('/home')
 def home():
     return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
+
+
+
+@app.route('/show-edit', methods=["GET", "POST"])
+def show_edit():
+    if request.method == "GET":
+        return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
+
+
+
+#------------------------------------------------------------
+# ask user to choose which buggy, by its id, to edit/view
+#------------------------------------------------------------
+@app.route('/choose', methods = ['POST', 'GET'])
+def choose():
+    if request.method == 'GET':
+        con = sql.connect(DATABASE_FILE)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute("SELECT id FROM buggies")
+        record = cur.fetchone() ;
+
+        return render_template('choose.html', options=record)
+
 
 
 #------------------------------------------------------------
@@ -118,9 +144,11 @@ def home():
 #  if it's a POST request process the submitted data
 #  but if it's a GET request, just show the form
 #------------------------------------------------------------
-@app.route('/edit', methods = ['POST', 'GET'])
+@app.route('/edit', methods = ['POST', 'GET', 'PUT'])
 def create_buggy():
     if request.method == 'GET':
+        #exec_str = "SELECT * FROM buggies WHERE id IS "
+
         # get bool values from DB, so HTML 'knows' whether to check their respective checkboxes or not
         con = sql.connect(DATABASE_FILE)
         con.row_factory = sql.Row
@@ -128,7 +156,7 @@ def create_buggy():
         cur.execute("SELECT * FROM buggies")
         record = cur.fetchone();
 
-        return render_template("buggy-form.html", 
+        return render_template("edit.html", 
             power_type_ops=POWER_TYPE_OPS,
             flag_patts=FLAG_PATT,
             tyres=TYRES,
@@ -137,6 +165,7 @@ def create_buggy():
             ai=AI,
             vals=record)
     
+
     elif request.method == 'POST':
         msg=""
 
@@ -149,6 +178,7 @@ def create_buggy():
                 for att in ATTRIBUTES:
                     form_att = request.form[att]
 
+                    # if user left it empty, simply ignore...
                     if form_att == "":
                         continue
 
@@ -173,11 +203,14 @@ def create_buggy():
 
                 con.commit()
                 msg = "Record successfully saved"
+        
         except:
             con.rollback()
             msg = "error in update operation"
+        
         finally:
             con.close()
+        
         return render_template("updated.html", msg = msg)
 
 
@@ -192,7 +225,7 @@ def show_buggies():
     cur.execute("SELECT * FROM buggies")
     record = cur.fetchone(); 
     
-    return render_template("buggy.html", buggy = record)
+    return render_template("buggy.html", buggy=record)
 
 
 #------------------------------------------------------------
