@@ -1,5 +1,5 @@
 from crypt import methods
-from flask import Flask, render_template, request, jsonify, redirect
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 import os
 import sqlite3 as sql
 
@@ -122,14 +122,25 @@ AI = [
 def home():
     return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
 
+"""
+@app.route('/exp/<val>/<val2>', methods = ['POST', 'GET'])
+def exp_val(val, val2=None):
+    if request.method == 'GET':
+        return "Val is " + str(val) #+ " and " + val2
 
+@app.route('/exp', methods = ['POST', 'GET'])
+def exp():
+    if request.method == 'GET':
+        return "Val is NULL"
+"""
 
 #------------------------------------------------------------
 # ask user to choose which buggy, by its id, to edit/view
 #------------------------------------------------------------
-@app.route('/choose', methods = ['POST', 'GET'])
+@app.route('/choose', methods=['GET', 'POST'])
 def choose():
     if request.method == 'GET':
+        next_step = request.args.get('next_step')
         con = sql.connect(DATABASE_FILE)
         con.row_factory = sql.Row
         cur = con.cursor()
@@ -140,11 +151,120 @@ def choose():
         # since record returns all data from a row, we must sanitise it
         # before redering it.
         for r in record:
-            ids.append( r[0] )
+            ids.append( r[0] ) # the first value of a row is the primary id key...
 
-        return render_template('choose.html', options=ids)
+        return render_template('choose.html', 
+                                options=ids, 
+                                next_step=url_for( 'choose', next_step=next_step ))
+    
+    elif request.method == 'POST':
+        next_step = request.args.get('next_step')
+        chosen_buggy = request.form['buggy_id']
+
+        if next_step == "edit":
+            return redirect(url_for('edit_buggy',
+                                    buggy_id=chosen_buggy))
+        
+        else:
+            return "Not yet..."
+        
+        
 
 
+
+"""
+@app.route('/choose', methods = ['POST', 'GET'])
+def choose(next_step=None):
+"""
+
+
+
+
+
+#------------------------------------------------------------
+# editing a buggy:
+#  if it's a POST request process the submitted data
+#  but if it's a GET request, just show the form with saved data filled out
+#------------------------------------------------------------
+@app.route('/edit', methods = ['POST', 'GET'])
+def edit_buggy():
+    if request.method == 'GET':
+        
+        # if no buggy_id is passed, i.e., this is the first time 
+        # accessing page, first re-route to 'choose', which then 
+        # will proved the buggy_id needed to continue.
+        if request.args.get('buggy_id') is None:
+            return redirect(url_for("choose", next_step="edit"))
+
+        # after user has chosen a buggy to edit, everything can continue 
+        # as normal, by retriving data from row and displaying it on edit page.
+        buggy_id = str(request.args.get('buggy_id'))
+
+        # get bool values from DB, so HTML 'knows' whether to check their respective checkboxes or not
+        con = sql.connect(DATABASE_FILE)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute("SELECT * FROM buggies WHERE id=?", buggy_id)
+        record = cur.fetchone() ;
+
+        return render_template("edit.html", 
+                                power_type_ops=POWER_TYPE_OPS,
+                                flag_patts=FLAG_PATT,
+                                tyres=TYRES,
+                                armor=ARMOR,
+                                attacks=ATTACKS,
+                                ai=AI,
+                                vals=record)
+    
+
+    elif request.method == 'POST':
+        msg=""
+
+        # Said VARS can now be added onto the database with their relative
+        # JSON names.
+        try:
+            with sql.connect(DATABASE_FILE) as con:
+                cur = con.cursor()
+
+                buggy_id = request.form['id']
+
+                for att in ATTRIBUTES:
+                    form_att = request.form[att]
+
+                    # if user left it empty, simply ignore...
+                    if form_att == "":
+                        continue
+
+                    exec_str = "UPDATE buggies set %s=? WHERE id=?" % att
+
+                    cur.execute(
+                    exec_str,
+                    (form_att, buggy_id)
+                )
+
+                # now a separate FOR loop for boolean values
+                for att in ATTRIBUTES_BOOL:
+                    form_att = True if request.form.get(att) == "on" else False
+
+                    exec_str = "UPDATE buggies set %s=? WHERE id=?" % att
+
+                    cur.execute(
+                    exec_str,
+                    (form_att, buggy_id)
+                )
+
+
+                con.commit()
+                msg = "Record successfully saved"
+        
+        except:
+            con.rollback()
+            msg = "error in update operation"
+        
+        finally:
+            con.close()
+        
+        return render_template("updated.html", msg = msg)
 
 
 @app.route('/create', methods = ['POST', 'GET'])
@@ -211,79 +331,6 @@ def create_buggy():
         
         return render_template("updated.html", msg = msg)
 
-
-
-#------------------------------------------------------------
-# editing a buggy:
-#  if it's a POST request process the submitted data
-#  but if it's a GET request, just show the form with saved data filled out
-#------------------------------------------------------------
-@app.route('/edit', methods = ['POST', 'GET'])
-def edit_buggy():
-    if request.method == 'GET':
-        # get bool values from DB, so HTML 'knows' whether to check their respective checkboxes or not
-        con = sql.connect(DATABASE_FILE)
-        con.row_factory = sql.Row
-        cur = con.cursor()
-        cur.execute("SELECT * FROM buggies")
-        record = cur.fetchone() ;
-
-        return render_template("edit.html", 
-            power_type_ops=POWER_TYPE_OPS,
-            flag_patts=FLAG_PATT,
-            tyres=TYRES,
-            armor=ARMOR,
-            attacks=ATTACKS,
-            ai=AI,
-            vals=record)
-    
-
-    elif request.method == 'POST':
-        msg=""
-
-        # Said VARS can now be added onto the database with their relative
-        # JSON names.
-        try:
-            with sql.connect(DATABASE_FILE) as con:
-                cur = con.cursor()
-
-                for att in ATTRIBUTES:
-                    form_att = request.form[att]
-
-                    # if user left it empty, simply ignore...
-                    if form_att == "":
-                        continue
-
-                    exec_str = "UPDATE buggies set %s=? WHERE id=?" % att
-
-                    cur.execute(
-                    exec_str,
-                    (form_att, DEFAULT_BUGGY_ID)
-                )
-
-                # now a separate FOR loop for boolean values
-                for att in ATTRIBUTES_BOOL:
-                    form_att = True if request.form.get(att) == "on" else False
-
-                    exec_str = "UPDATE buggies set %s=? WHERE id=?" % att
-
-                    cur.execute(
-                    exec_str,
-                    (form_att, DEFAULT_BUGGY_ID)
-                )
-
-
-                con.commit()
-                msg = "Record successfully saved"
-        
-        except:
-            con.rollback()
-            msg = "error in update operation"
-        
-        finally:
-            con.close()
-        
-        return render_template("updated.html", msg = msg)
 
 
 #------------------------------------------------------------

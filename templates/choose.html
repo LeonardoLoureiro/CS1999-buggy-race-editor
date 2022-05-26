@@ -8,14 +8,12 @@
 <div class="choose">
     <h1> Please choose buggy you want: </h1>
 
-    <form action="/edit" method="POST">
+    <form action="{{next_step}}" method="POST">
         <select name="buggy_id">
             {% for OP in options %}
                 <option value="{{OP}}">{{OP}}</option>
             {% endfor %}
         </select>
-
-        <input type="hidden" name="buggy_choice">
 
 
         <input type="submit" id="select-butt" class="button">
