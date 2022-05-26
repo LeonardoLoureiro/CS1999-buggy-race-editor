@@ -168,6 +168,8 @@ def choose():
         elif next_step == "show_buggy":
             return redirect(url_for('show_buggy',
                                     buggy_id=chosen_buggy))
+        
+        
 
 
 
@@ -335,10 +337,12 @@ def show_buggy():
 
     buggy_id = request.args.get('buggy_id')
 
+    print(buggy_id)
+
     con = sql.connect(DATABASE_FILE)
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("SELECT * FROM buggies")
+    cur.execute("SELECT * FROM buggies WHERE id=?", buggy_id)
     record = cur.fetchone(); 
     
     return render_template("buggy.html", buggy=record)
@@ -349,7 +353,6 @@ def show_buggy():
 #------------------------------------------------------------
 @app.route('/info')
 def info():
-    
     tables = get_tables(SPECS_URL)
 
     tables = tables[1:]
