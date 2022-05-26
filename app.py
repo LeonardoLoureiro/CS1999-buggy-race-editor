@@ -136,6 +136,12 @@ def choose():
         cur.execute("SELECT id FROM buggies;")
         record = cur.fetchall() ;
 
+        ids = []
+        # since record returns all data from a row, we must sanitise it
+        # before redering it.
+        for r in record:
+            ids.append( r[0] )
+
         return render_template('choose.html', options=ids)
 
 
