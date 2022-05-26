@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+<!--
+    This file will contain form to choose which of the current saved buggies user 
+    wants to edit, show or compare to INFO page. It will display 
+-->
+{% block content %}
+
+<div class="choose">
+    <h1> Please choose buggy you want: </h1>
+
+    <form action="/edit" method="POST">
+        <select name="buggy_id">
+            {% for OP in options %}
+                <option value="{{OP}}">{{OP}}</option>
+            {% endfor %}
+        </select>
+
+        <input type="hidden" name="buggy_choice">
+
+
+        <input type="submit" id="select-butt" class="button">
+    </form>
+</div>
+
+{% endblock %}

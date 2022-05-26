@@ -3,7 +3,10 @@ from flask import Flask, render_template, request, jsonify, redirect
 import os
 import sqlite3 as sql
 
-import scripts.scrapper as scrapper
+from matplotlib.pyplot import table
+
+from scripts.scrapper import *
+from scripts.calc_costs import *
 
 # app - The flask application where all the magical things are configured.
 app = Flask(__name__)
@@ -12,6 +15,8 @@ app = Flask(__name__)
 DATABASE_FILE = "database.db"
 DEFAULT_BUGGY_ID = "1"
 BUGGY_RACE_SERVER_URL = "https://rhul.buggyrace.net"
+
+SPECS_URL = "https://rhul.buggyrace.net/specs/"
 
 ATTRIBUTES = [
     "qty_wheels",
@@ -30,7 +35,10 @@ ATTRIBUTES = [
 	"qty_attacks",
 	"algo"
 ]
- 
+
+
+
+
 # since bool attributes have to be treated differently, 
 # best to have them in a separate list for easier management/correction
 # when pushing to DB.
@@ -116,13 +124,6 @@ def home():
 
 
 
-@app.route('/show-edit', methods=["GET", "POST"])
-def show_edit():
-    if request.method == "GET":
-        return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
-
-
-
 #------------------------------------------------------------
 # ask user to choose which buggy, by its id, to edit/view
 #------------------------------------------------------------
@@ -132,29 +133,94 @@ def choose():
         con = sql.connect(DATABASE_FILE)
         con.row_factory = sql.Row
         cur = con.cursor()
-        cur.execute("SELECT id FROM buggies")
-        record = cur.fetchone() ;
+        cur.execute("SELECT id FROM buggies;")
+        record = cur.fetchall() ;
 
-        return render_template('choose.html', options=record)
+        return render_template('choose.html', options=ids)
 
 
 
-#------------------------------------------------------------
-# creating a new buggy:
-#  if it's a POST request process the submitted data
-#  but if it's a GET request, just show the form
-#------------------------------------------------------------
-@app.route('/edit', methods = ['POST', 'GET', 'PUT'])
+
+@app.route('/create', methods = ['POST', 'GET'])
 def create_buggy():
     if request.method == 'GET':
-        #exec_str = "SELECT * FROM buggies WHERE id IS "
 
+        return render_template("create.html", 
+            power_type_ops=POWER_TYPE_OPS,
+            flag_patts=FLAG_PATT,
+            tyres=TYRES,
+            armor=ARMOR,
+            attacks=ATTACKS,
+            ai=AI)
+    
+    elif request.method == 'POST':
+        msg = ""
+
+        try:
+            with sql.connect(DATABASE_FILE) as con:
+                cur = con.cursor()
+                
+                att_val_list = []
+                att_name_list = []
+                num_vals = ["qty_wheels",
+                            "power_units",
+                            "aux_power_units",
+                            "hamster_booster",
+                            "qty_tyres",
+                            "qty_attacks"]
+
+                for att in ATTRIBUTES[:-1]:
+                    att_name_list.append(att)
+                    if att in num_vals:
+                        att_val_list.append( int( request.form[att] ) )
+                        continue
+
+                    att_val_list.append( request.form[att] )
+                
+                for att in ATTRIBUTES_BOOL:
+                    att_name_list.append(att)
+                    val = True if request.form.get(att) == "on" else False
+                    att_val_list.append( val )
+
+                att_name_list.append('algo')
+                att_val_list.append( request.form['algo'] )
+
+                exec_str_list = ', '.join('?' * len(att_val_list))
+                exec_str_att_names = ', '.join( att_name_list )
+                exec_str = "INSERT INTO buggies (%s) VALUES (%s);" % (exec_str_att_names, exec_str_list)
+                
+                cur.execute(exec_str, att_val_list)
+
+                con.commit()
+
+                msg = "Record successfully saved"
+        
+        except:
+            con.rollback()
+            msg = "error in update operation"
+        
+        finally:
+            con.close()
+            
+        
+        return render_template("updated.html", msg = msg)
+
+
+
+#------------------------------------------------------------
+# editing a buggy:
+#  if it's a POST request process the submitted data
+#  but if it's a GET request, just show the form with saved data filled out
+#------------------------------------------------------------
+@app.route('/edit', methods = ['POST', 'GET'])
+def edit_buggy():
+    if request.method == 'GET':
         # get bool values from DB, so HTML 'knows' whether to check their respective checkboxes or not
         con = sql.connect(DATABASE_FILE)
         con.row_factory = sql.Row
         cur = con.cursor()
         cur.execute("SELECT * FROM buggies")
-        record = cur.fetchone();
+        record = cur.fetchone() ;
 
         return render_template("edit.html", 
             power_type_ops=POWER_TYPE_OPS,
@@ -233,7 +299,11 @@ def show_buggies():
 #------------------------------------------------------------
 @app.route('/info')
 def info():
-    tables = scrapper.get_tables()
+    tables = get_tables(SPECS_URL)
+
+    tables = tables[1:]
+    #^getting rid of 1st table, as it merely states all the different attributes 
+    # and is not useful for this page
 
     # get info from db so user can compare against info from tables
     con = sql.connect(DATABASE_FILE)
