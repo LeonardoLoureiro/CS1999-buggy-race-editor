@@ -165,17 +165,9 @@ def choose():
             return redirect(url_for('edit_buggy',
                                     buggy_id=chosen_buggy))
         
-        else:
-            return "Not yet..."
-        
-        
-
-
-
-"""
-@app.route('/choose', methods = ['POST', 'GET'])
-def choose(next_step=None):
-"""
+        elif next_step == "show_buggy":
+            return redirect(url_for('show_buggy',
+                                    buggy_id=chosen_buggy))
 
 
 
@@ -190,9 +182,9 @@ def choose(next_step=None):
 def edit_buggy():
     if request.method == 'GET':
         
-        # if no buggy_id is passed, i.e., this is the first time 
-        # accessing page, first re-route to 'choose', which then 
-        # will proved the buggy_id needed to continue.
+        # if no 'buggy_id' is passed, i.e., this is the first time 
+        # accessing page, then it should first re-route to 'choose', which then 
+        # will provide the buggy_id needed to continue.
         if request.args.get('buggy_id') is None:
             return redirect(url_for("choose", next_step="edit"))
 
@@ -337,7 +329,12 @@ def create_buggy():
 # a page for displaying the buggy
 #------------------------------------------------------------
 @app.route('/buggy')
-def show_buggies():
+def show_buggy():
+    if request.args.get('buggy_id') is None:
+        return redirect(url_for("choose", next_step="show_buggy"))
+
+    buggy_id = request.args.get('buggy_id')
+
     con = sql.connect(DATABASE_FILE)
     con.row_factory = sql.Row
     cur = con.cursor()
@@ -352,6 +349,7 @@ def show_buggies():
 #------------------------------------------------------------
 @app.route('/info')
 def info():
+    
     tables = get_tables(SPECS_URL)
 
     tables = tables[1:]
@@ -376,21 +374,6 @@ def poster():
    return render_template('poster.html')
 
 
-
-
-
-
-
-
-
-
-#------------------------------------------------------------
-# a placeholder page for editing the buggy: you'll need
-# to change this when you tackle task 2-EDIT
-#------------------------------------------------------------
-# @app.route('/edit')
-# def edit_buggy():
-#     return render_template("buggy-form.html")
 
 #------------------------------------------------------------
 # You probably don't need to edit this... unless you want to ;)
