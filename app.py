@@ -18,6 +18,10 @@ BUGGY_RACE_SERVER_URL = "https://rhul.buggyrace.net"
 
 SPECS_URL = "https://rhul.buggyrace.net/specs/"
 
+
+# List of all attributes a buggy has, this way, no hard coding is needed
+# and rather it can be iterated over. All attributed except those which are of bool
+# nature.
 ATTRIBUTES = [
     "qty_wheels",
 	"power_type",
@@ -35,9 +39,6 @@ ATTRIBUTES = [
 	"qty_attacks",
 	"algo"
 ]
-
-
-
 
 # since bool attributes have to be treated differently, 
 # best to have them in a separate list for easier management/correction
@@ -122,17 +123,60 @@ AI = [
 def home():
     return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
 
-"""
-@app.route('/exp/<val>/<val2>', methods = ['POST', 'GET'])
-def exp_val(val, val2=None):
-    if request.method == 'GET':
-        return "Val is " + str(val) #+ " and " + val2
 
-@app.route('/exp', methods = ['POST', 'GET'])
-def exp():
+@app.route('/delete', methods=['GET', 'POST'])
+def delete():
     if request.method == 'GET':
-        return "Val is NULL"
-"""
+        if request.args.get('buggy_id') is None:
+            return redirect(url_for("choose", next_step="delete"))
+
+        buggy_id = str(request.args.get('buggy_id'))
+
+        try:
+            con = sql.connect(DATABASE_FILE)
+            con.row_factory = sql.Row
+            cur = con.cursor()
+            cur.execute("SELECT * FROM buggies WHERE id=?;", buggy_id)
+            record = cur.fetchone() ;
+
+        except:
+            con.rollback()
+            msg = "error in retrieving operation"
+
+            return render_template("update.html", msg=msg)
+
+        finally:
+            con.close()
+
+        return render_template("delete.html", buggy=record)
+    
+    elif request.method == 'POST':
+        buggy_id = request.form['buggy_id']
+        print(buggy_id)
+
+        exec_str = "DELETE FROM buggies WHERE id=?;"
+        
+        try:
+            con = sql.connect(DATABASE_FILE)
+            con.row_factory = sql.Row
+            cur = con.cursor()
+            cur.execute(exec_str, buggy_id)
+            con.commit()
+
+            msg = "Record successfully saved"
+        
+        except sql.Error as error:
+            con.rollback()
+            msg = "error in update operation"
+
+        finally:
+            con.close()
+        
+        return render_template("updated.html", msg=msg)
+
+
+
+
 
 #------------------------------------------------------------
 # ask user to choose which buggy, by its id, to edit/view
@@ -169,10 +213,9 @@ def choose():
             return redirect(url_for('show_buggy',
                                     buggy_id=chosen_buggy))
         
-        
-
-
-
+        elif next_step == "delete":
+            return redirect(url_for('delete',
+                                    buggy_id=chosen_buggy))
 
 
 #------------------------------------------------------------
@@ -261,6 +304,12 @@ def edit_buggy():
         return render_template("updated.html", msg = msg)
 
 
+
+#------------------------------------------------------------
+# creating a buggy:
+#  create a new buggy, with all the default values already filled out, 
+#  then post it to the DB, creating a new row.
+#------------------------------------------------------------
 @app.route('/create', methods = ['POST', 'GET'])
 def create_buggy():
     if request.method == 'GET':
@@ -328,7 +377,8 @@ def create_buggy():
 
 
 #------------------------------------------------------------
-# a page for displaying the buggy
+# a page for displaying the buggy, 
+# after user chooses which to display
 #------------------------------------------------------------
 @app.route('/buggy')
 def show_buggy():

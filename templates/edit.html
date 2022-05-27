@@ -21,6 +21,7 @@
 </p>
 
 <form name="buggyForm" onsubmit="return main();" action="/edit" method="post">
+  <input type="hidden" name="id" value="{{vals[0]}}">
   <table>
 
     <tr>
@@ -68,18 +69,6 @@
           {% for OP in power_type_ops %}
             <option {% if vals[4] == OP %} selected {%endif%} value="{{OP}}">{{OP.title()}}</option>
           {% endfor %}
-          <!--
-          <option value="petrol">Petrol</option>
-          <option value="fusion">Fusion</option>
-          <option value="steam">Steam</option>
-          <option value="bio">Bio</option>
-          <option value="electric">Electric</option>
-          <option value="rocket">Rocket</option>
-          <option value="hamster">Hamster</option>
-          <option value="thermo">Thermo</option>
-          <option value="solar">Solar</option>
-          <option value="wind">Wind</option>
-          -->
         </select>
       </th>
     </tr>
@@ -98,7 +87,7 @@
         <label for="hamster_booster">Hamster Booster:</label>
       </th>
       <th>
-        <input type="number" name="hamster_booster" value="{{vals[6]}}" step ="1" min="1" max="99"/>
+        <input type="number" name="hamster_booster" value="{{vals[6]}}" step ="1" min="0" max="99"/>
       </th>
     </tr>
   
