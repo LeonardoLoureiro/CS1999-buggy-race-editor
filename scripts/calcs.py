@@ -5,32 +5,10 @@ import urllib.request
 
 JSON_DATA_URL = "https://rhul.buggyrace.net/specs/data/types.json"
 
-USER_CHOICES = {
-    "algo": "steady", 
-    "armour": "wood", 
-    "attack": "none", 
-    "aux_power_type": "none", 
-    "aux_power_units": 0, 
-    "flag_color": "#ffffff", 
-    "flag_color_secondary": "#000000", 
-    "flag_pattern": "plain", 
-    "hamster_booster": 0,  
-    "power_type": "petrol", 
-    "power_units": 1, 
-    "qty_attacks": 0, 
-    "qty_tyres": 4, 
-    "qty_wheels": 4, 
-    "tyres": "knobbly",
-    "antibiotic": 1,
-    "banging": 0, 
-    "fireproof": 0, 
-    "insulated": 1
-}
 
 # algo and flag colours/patterns are not counted 
 # since they do not cost anything to begin with...
 BOOL    = ["antibiotic", "banging", "fireproof", "insulated"]
-# NORMAL  = ["tyres", "attack", "hamster_booster", "aux_power_type", "power_type"]
 
 """
     cost_of_tyres = number of wheels x type of tyres
@@ -40,9 +18,16 @@ BOOL    = ["antibiotic", "banging", "fireproof", "insulated"]
     cost_of_powers = power_type x power_units
 """
 
-# 2 separate mechanisms:
-#   - normal atts, which can be calculated streamlined
-#   - bool vals which have to be done separately
+# This function calculate the total cost of the buggy,
+# first by iterating over bool values, as its easier,
+# then through each individual attribute which has a cost
+# value attatched:
+#   - tyres
+#   - armour
+#   - attacks
+#   - hasmter boosters
+#   - power type
+#   - aux power type (a backup power type)
 def calc_total_cost(user_choices):
     total_cost = 0
 
@@ -120,12 +105,14 @@ def calc_total_cost(user_choices):
 
 
 
-# Things that have mass:
+# This function calculates the total mass of a buggy
+# depending on any attribute which carries mass,
+# which are the following:
 #   - tyres
 #   - armour (see special increase if wheel > 4)
-#   - motive power
-#   - motive aux power
-#   - offensive caps
+#   - attacks
+#   - power type
+#   - aux power type (a backup power type)
 def calc_total_mass(user_choices):
     total_mass = 0
 
