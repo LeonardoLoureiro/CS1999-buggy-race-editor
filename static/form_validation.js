@@ -7,6 +7,11 @@ function main() {
     return false ;
   }
 
+  if ( !consum_pow() ) {
+    return false ;
+  }
+
+
 }
 
 // number of wheel can only be equal to or greater than number of tyres...
@@ -40,15 +45,47 @@ function flag_patt() {
     var sec_col = document.forms["buggyForm"]["flag_color_secondary"].value ;
 
     if (pri_col == sec_col) {
-      alert("Both primary and secondary flag colour cannot be the same.")
+      alert("Both primary and secondary flag colour cannot be the same.") ;
 
       document.getElementsByName('flag_color')[0].style.borderColor = "red";
       document.getElementsByName('flag_color_secondary')[0].style.borderColor = "red";
       
       return false
-    }
-  }
+    } ;
+  } ;
 
   return true ;
+}
 
+// Can only have one (1) unit if consumable,
+// counts for both main power and aux power type.
+function consum_pow() {
+  const non_consums = ["fusion", "thermo", "solar", "wind"] ;
+
+  var power_type = document.forms["buggyForm"]["power_type"].value ;
+  var power_type_num = document.forms["buggyForm"]["power_units"].value ;
+
+  var aux_power_type = document.forms["buggyForm"]["aux_power_type"].value ;
+  var aux_power_type_num = document.forms["buggyForm"]["aux_power_units"].value ;
+
+  if (non_consums.includes(power_type) && (power_type_num > 1) ) {
+    alert("Non-consumable power motive can only have one (1) unit.") ;
+
+    document.getElementsByName('power_type')[0].style.borderColor = "red" ;
+    document.getElementsByName('power_units')[0].style.borderColor = "red" ;
+
+    return false ;
+  } ;
+
+  if (non_consums.includes(aux_power_type) && (aux_power_type_num > 1) ) {
+    alert("Non-consumable power motive can only have one (1) unit.") ;
+
+    document.getElementsByName('aux_power_type')[0].style.borderColor = "red" ;
+    document.getElementsByName('aux_power_units')[0].style.borderColor = "red" ;
+
+    return false ;
+  } ;
+
+
+  return true ;
 }
