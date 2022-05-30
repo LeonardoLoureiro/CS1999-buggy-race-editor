@@ -183,6 +183,3 @@ def calc_total_mass(user_choices):
 
 
     return total_mass
-
-
-print(calc_total_mass(USER_CHOICES))
