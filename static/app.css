@@ -150,3 +150,8 @@ div.choose {
 #select-butt {
   float: inline-end;
 }
+
+.sup-ast {
+  font-style: italic ;
+  padding-bottom: 1em ;
+}

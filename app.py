@@ -6,7 +6,7 @@ import sqlite3 as sql
 from matplotlib.pyplot import table
 
 from scripts.scrapper import *
-from scripts.calc_costs import *
+from scripts.calcs import *
 
 # app - The flask application where all the magical things are configured.
 app = Flask(__name__)
@@ -57,7 +57,6 @@ ATTRIBUTES_BOOL = [
 # then this makes thins much easer. Plus, doing this dynamicall instead of hard-coding,
 # makes things less likely to be coded wrong.
 POWER_TYPE_OPS = [
-    "none",
 	"petrol",
 	"fusion",
 	"steam",
@@ -67,7 +66,8 @@ POWER_TYPE_OPS = [
 	"hamster",
 	"thermo",
 	"solar",
-	"wind"
+	"wind",
+    "none"
 ]
 
 FLAG_PATT = [
@@ -152,7 +152,6 @@ def delete():
     
     elif request.method == 'POST':
         buggy_id = request.form['buggy_id']
-        print(buggy_id)
 
         exec_str = "DELETE FROM buggies WHERE id=?;"
         
@@ -386,8 +385,6 @@ def show_buggy():
         return redirect(url_for("choose", next_step="show_buggy"))
 
     buggy_id = request.args.get('buggy_id')
-
-    print(buggy_id)
 
     con = sql.connect(DATABASE_FILE)
     con.row_factory = sql.Row
