@@ -44,7 +44,7 @@
                 if user has previously selected it based on what it gets from DB. 
                 Better than hard-coding everything which is totally what I did do 
                 as this was absolutely the first solution... -->
-          {% for OP in power_type_ops %}
+          {% for OP in power_type_ops[:-1] %}
             <option {% if vals[2] == OP %} selected {%endif%} value="{{OP}}">{{OP.title()}}</option>
           {% endfor %}
         </select>
