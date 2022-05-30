@@ -3,8 +3,6 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 import os
 import sqlite3 as sql
 
-from matplotlib.pyplot import table
-
 from scripts.scrapper import *
 from scripts.calcs import *
 
@@ -50,6 +48,12 @@ ATTRIBUTES_BOOL = [
 	"banging"
 ]
 
+NUM_VALS = ["qty_wheels",
+            "power_units",
+            "aux_power_units",
+            "hamster_booster",
+            "qty_tyres",
+            "qty_attacks"]
 
 # Options given to users as a list for easier way to code IF code block in HTML edit page.
 # Since there are more than 1 multiple-choice attributes, it's best to implement it this 
@@ -174,9 +178,6 @@ def delete():
         return render_template("updated.html", msg=msg)
 
 
-
-
-
 #------------------------------------------------------------
 # ask user to choose which buggy, by its id, to edit/view
 #------------------------------------------------------------
@@ -264,12 +265,41 @@ def edit_buggy():
 
                 buggy_id = request.form['id']
 
+                buggy_atts = {}
+
+                ## update the price of the new, edited buggy
+                # but first make a dict out of the form values
+                # It would be simple to use 'json.dumps' here, but we need 
+                # certain attributes to be integers so python can later use them
+                # for their respective calculations. 
+                for att in ATTRIBUTES:
+                    if att in NUM_VALS:
+                        buggy_atts[att] = int(request.form[att])
+                        continue
+
+                    buggy_atts[att] = request.form[att]
+                
+                for att in ATTRIBUTES_BOOL:
+                    buggy_atts[att] = True if request.form.get(att) == "on" else False
+
+
+                # now set the new cost and mass of buggie to db...
+                cost_mass_pair = calc_cost_mass(buggy_atts)
+                exec_str_cost = "UPDATE buggies set cost=? WHERE id=?"
+                cur.execute(
+                    exec_str_cost,
+                    (str(cost_mass_pair[0]), buggy_id)
+                )
+
+                exec_str_mass = "UPDATE buggies set mass=? WHERE id=?"
+                cur.execute(
+                    exec_str_mass,
+                    (str(cost_mass_pair[1]), buggy_id)
+                )
+
+
                 for att in ATTRIBUTES:
                     form_att = request.form[att]
-
-                    # if user left it empty, simply ignore...
-                    if form_att == "":
-                        continue
 
                     exec_str = "UPDATE buggies set %s=? WHERE id=?" % att
 
@@ -303,7 +333,6 @@ def edit_buggy():
         return render_template("updated.html", msg = msg)
 
 
-
 #------------------------------------------------------------
 # creating a buggy:
 #  create a new buggy, with all the default values already filled out, 
@@ -326,32 +355,47 @@ def create_buggy():
 
         try:
             with sql.connect(DATABASE_FILE) as con:
+                buggy_atts = {} #this will be used to calculate cost and mass of the buggy
+
                 cur = con.cursor()
                 
                 att_val_list = []
                 att_name_list = []
-                num_vals = ["qty_wheels",
-                            "power_units",
-                            "aux_power_units",
-                            "hamster_booster",
-                            "qty_tyres",
-                            "qty_attacks"]
 
                 for att in ATTRIBUTES[:-1]:
                     att_name_list.append(att)
-                    if att in num_vals:
+                    
+
+                    if att in NUM_VALS:
                         att_val_list.append( int( request.form[att] ) )
+                        buggy_atts[att] = int(request.form[att])
+
                         continue
 
                     att_val_list.append( request.form[att] )
+                    buggy_atts[att] = request.form[att]
                 
                 for att in ATTRIBUTES_BOOL:
                     att_name_list.append(att)
                     val = True if request.form.get(att) == "on" else False
                     att_val_list.append( val )
 
+                    buggy_atts[att] = val
+
                 att_name_list.append('algo')
                 att_val_list.append( request.form['algo'] )
+                buggy_atts['algo'] = request.form['algo']
+
+                # must add "cost" and "mass" to the list of variables which will be added
+                att_name_list.append('cost')
+                att_name_list.append('mass')
+
+                # now calculate them
+                cost_mass_pair = calc_cost_mass(buggy_atts)
+
+                # and, finally, appending them to the vals list
+                att_val_list.append( cost_mass_pair[0]) 
+                att_val_list.append( cost_mass_pair[1]) 
 
                 exec_str_list = ', '.join('?' * len(att_val_list))
                 exec_str_att_names = ', '.join( att_name_list )
@@ -374,12 +418,11 @@ def create_buggy():
         return render_template("updated.html", msg = msg)
 
 
-
 #------------------------------------------------------------
 # a page for displaying the buggy, 
 # after user chooses which to display
 #------------------------------------------------------------
-@app.route('/buggy')
+@app.route('/show')
 def show_buggy():
     if request.args.get('buggy_id') is None:
         return redirect(url_for("choose", next_step="show_buggy"))
@@ -392,7 +435,7 @@ def show_buggy():
     cur.execute("SELECT * FROM buggies WHERE id=?", buggy_id)
     record = cur.fetchone(); 
     
-    return render_template("buggy.html", buggy=record)
+    return render_template("show.html", buggy=record)
 
 
 #------------------------------------------------------------
@@ -424,7 +467,6 @@ def poster():
    return render_template('poster.html')
 
 
-
 #------------------------------------------------------------
 # You probably don't need to edit this... unless you want to ;)
 #
@@ -443,6 +485,7 @@ def summary():
 
     buggies = dict(zip([column[0] for column in cur.description], cur.fetchone())).items() 
     return jsonify({ key: val for key, val in buggies if (val != "" and val is not None) })
+
 
 # You shouldn't need to add anything below this!
 if __name__ == '__main__':

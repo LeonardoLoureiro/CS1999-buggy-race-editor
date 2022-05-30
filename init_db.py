@@ -44,9 +44,10 @@ connection.execute("""
     insulated             BOOLEAN DEFAULT FALSE,
     antibiotic            BOOLEAN DEFAULT FALSE,
     banging               BOOLEAN DEFAULT FALSE,
-    algo                  VARCHAR(20) DEFAULT 'steady'
+    algo                  VARCHAR(20) DEFAULT 'steady',
+    cost                  FLOAT DEFAULT 0,
+    mass                  FLOAT DEFAULT 0
   )
-
 """)
 
 print("- Table \"buggies\" exists OK")

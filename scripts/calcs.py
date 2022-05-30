@@ -8,7 +8,7 @@ JSON_DATA_URL = "https://rhul.buggyrace.net/specs/data/types.json"
 
 # algo and flag colours/patterns are not counted 
 # since they do not cost anything to begin with...
-BOOL    = ["antibiotic", "banging", "fireproof", "insulated"]
+BOOL = ["antibiotic", "banging", "fireproof", "insulated"]
 
 """
     cost_of_tyres = number of wheels x type of tyres
@@ -170,3 +170,11 @@ def calc_total_mass(user_choices):
 
 
     return total_mass
+
+
+def calc_cost_mass(buggy_atts):
+    
+    total_cost = calc_total_cost(buggy_atts)
+    total_mass = calc_total_mass(buggy_atts)
+
+    return [total_cost, total_mass]
