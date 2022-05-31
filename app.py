@@ -17,10 +17,9 @@ BUGGY_RACE_SERVER_URL = "https://rhul.buggyrace.net"
 SPECS_URL = "https://rhul.buggyrace.net/specs/"
 
 
-# List of all attributes a buggy has, this way, no hard coding is needed
-# and rather it can be iterated over. All attributed except those which are of bool
-# nature.
-ATTRIBUTES = [
+# just a list of every attribute aggregated into one big list
+ATTRIBUTES_WHOLE = [
+    "id",
     "qty_wheels",
 	"power_type",
     "power_units",
@@ -35,18 +34,26 @@ ATTRIBUTES = [
 	"armour",
 	"attack",
 	"qty_attacks",
-	"algo"
+    "fireproof",
+	"insulated",
+	"antibiotic",
+	"banging",
+	"algo",
+	"cost",
+	"mass"
 ]
+
+# List of all attributes a buggy has, this way, no hard coding it again is needed
+# and rather it can be iterated over. All attributed except those which are of bool
+# nature.
+ATTRIBUTES = ATTRIBUTES_WHOLE[1:15] + ATTRIBUTES_WHOLE[-3:-2]
+
+
 
 # since bool attributes have to be treated differently, 
 # best to have them in a separate list for easier management/correction
 # when pushing to DB.
-ATTRIBUTES_BOOL = [
-    "fireproof",
-	"insulated",
-	"antibiotic",
-	"banging"
-]
+ATTRIBUTES_BOOL = ATTRIBUTES_WHOLE[15:19]
 
 NUM_VALS = ["qty_wheels",
             "power_units",
@@ -150,10 +157,11 @@ DEFAULT_VALS = [
 def home():
     return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
 
-
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
     if request.method == 'GET':
+        # if no id is given, then redirect to choose page, which will then return with an id,
+        # allowing user to proceed.
         if request.args.get('buggy_id') is None:
             return redirect(url_for("choose", next_step="delete"))
 
@@ -173,7 +181,9 @@ def delete():
             return render_template("update.html", msg=msg)
 
         finally:
-            con.close()
+            con.close()        
+
+        record = db_data_2_dict(record)
 
         return render_template("delete.html", buggy=record)
     
@@ -346,24 +356,6 @@ def edit_buggy():
         return render_template("updated.html", msg = msg)
 
 
-
-def make_dict_form(form_data):
-    form_dict = {}
-
-    for att in ATTRIBUTES:
-        if att in NUM_VALS:
-            form_dict[att] = int(form_data[att])
-            continue
-
-        form_dict[att] = form_data[att]
-    
-    for att in ATTRIBUTES_BOOL:
-        form_dict[att] = True if form_data.get(att) == "on" else False
-
-    return form_dict
-
-
-
 #------------------------------------------------------------
 # creating a buggy:
 #  create a new buggy, with all the default values already filled out, 
@@ -409,7 +401,7 @@ def create_buggy():
 
                 val_list_as_str = [str(a) for a in buggy_atts.values()]
                 # ^must turn all vals into strings, since SQL does NOT like anything else when assigning variables
-                # to be entered into a db.
+                #  to be entered into a db.
                 
                 cur.execute(exec_str, val_list_as_str)
 
@@ -501,3 +493,33 @@ def summary():
 if __name__ == '__main__':
     alloc_port = os.environ['CS1999_PORT']
     app.run(debug=True, host="0.0.0.0", port=alloc_port)
+
+
+#------------------------------------------------------------
+# Custom function
+#------------------------------------------------------------
+# take data from form of a page, and turn it into a dict,
+# with each attributes correct data type (e.g., number of wheel should be integers.)
+def make_dict_form(form_data):
+    form_dict = {}
+
+    for att in ATTRIBUTES:
+        if att in NUM_VALS:
+            form_dict[att] = int(form_data[att])
+            continue
+
+        form_dict[att] = form_data[att]
+    
+    for att in ATTRIBUTES_BOOL:
+        form_dict[att] = True if form_data.get(att) == "on" else False
+
+    return form_dict
+
+# turn data from a db row into a dict.
+def db_data_2_dict(db_data):
+    db_dict = {}
+
+    for i, att in enumerate(ATTRIBUTES_WHOLE):
+        db_dict[att] = db_data[i]
+
+    return db_dict
