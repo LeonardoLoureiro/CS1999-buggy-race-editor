@@ -265,22 +265,13 @@ def edit_buggy():
 
                 buggy_id = request.form['id']
 
-                buggy_atts = {}
 
                 ## update the price of the new, edited buggy
                 # but first make a dict out of the form values
                 # It would be simple to use 'json.dumps' here, but we need 
                 # certain attributes to be integers so python can later use them
                 # for their respective calculations. 
-                for att in ATTRIBUTES:
-                    if att in NUM_VALS:
-                        buggy_atts[att] = int(request.form[att])
-                        continue
-
-                    buggy_atts[att] = request.form[att]
-                
-                for att in ATTRIBUTES_BOOL:
-                    buggy_atts[att] = True if request.form.get(att) == "on" else False
+                buggy_atts = make_dict_form(request.form)
 
 
                 # now set the new cost and mass of buggie to db...
@@ -333,6 +324,24 @@ def edit_buggy():
         return render_template("updated.html", msg = msg)
 
 
+
+def make_dict_form(form_data):
+    form_dict = {}
+
+    for att in ATTRIBUTES:
+        if att in NUM_VALS:
+            form_dict[att] = int(form_data[att])
+            continue
+
+        form_dict[att] = form_data[att]
+    
+    for att in ATTRIBUTES_BOOL:
+        form_dict[att] = True if form_data.get(att) == "on" else False
+
+    return form_dict
+
+
+
 #------------------------------------------------------------
 # creating a buggy:
 #  create a new buggy, with all the default values already filled out, 
@@ -355,53 +364,30 @@ def create_buggy():
 
         try:
             with sql.connect(DATABASE_FILE) as con:
-                buggy_atts = {} #this will be used to calculate cost and mass of the buggy
-
                 cur = con.cursor()
-                
-                att_val_list = []
-                att_name_list = []
 
-                for att in ATTRIBUTES[:-1]:
-                    att_name_list.append(att)
-                    
-
-                    if att in NUM_VALS:
-                        att_val_list.append( int( request.form[att] ) )
-                        buggy_atts[att] = int(request.form[att])
-
-                        continue
-
-                    att_val_list.append( request.form[att] )
-                    buggy_atts[att] = request.form[att]
-                
-                for att in ATTRIBUTES_BOOL:
-                    att_name_list.append(att)
-                    val = True if request.form.get(att) == "on" else False
-                    att_val_list.append( val )
-
-                    buggy_atts[att] = val
-
-                att_name_list.append('algo')
-                att_val_list.append( request.form['algo'] )
-                buggy_atts['algo'] = request.form['algo']
-
-                # must add "cost" and "mass" to the list of variables which will be added
-                att_name_list.append('cost')
-                att_name_list.append('mass')
+                buggy_atts = make_dict_form(request.form) 
+                # ^this will be used to calculate cost and mass of the buggy
+                # but first the data must be 'turned' into their correct
+                # respective data types for their calculations.
 
                 # now calculate them
                 cost_mass_pair = calc_cost_mass(buggy_atts)
 
-                # and, finally, appending them to the vals list
-                att_val_list.append( cost_mass_pair[0]) 
-                att_val_list.append( cost_mass_pair[1]) 
+                # must add "cost" and "mass" to the dict which will be added to db.
+                buggy_atts['cost'] = cost_mass_pair[0]
+                buggy_atts['mass'] = cost_mass_pair[1]
 
-                exec_str_list = ', '.join('?' * len(att_val_list))
-                exec_str_att_names = ', '.join( att_name_list )
+                exec_str_list = ', '.join('?' * len(buggy_atts))
+                exec_str_att_names = ', '.join( buggy_atts.keys() )
+
                 exec_str = "INSERT INTO buggies (%s) VALUES (%s);" % (exec_str_att_names, exec_str_list)
+
+                val_list_as_str = [str(a) for a in buggy_atts.values()]
+                # ^must turn all vals into strings, since SQL does NOT like anything else when assigning variables
+                # to be entered into a db.
                 
-                cur.execute(exec_str, att_val_list)
+                cur.execute(exec_str, val_list_as_str)
 
                 con.commit()
 
