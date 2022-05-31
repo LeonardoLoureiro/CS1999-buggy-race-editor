@@ -149,6 +149,42 @@ DEFAULT_VALS = [
 ]
 
 
+
+#------------------------------------------------------------
+# Custom function
+#------------------------------------------------------------
+# take data from form of a page, and turn it into a dict,
+# with each attributes correct data type (e.g., number of wheel should be integers.)
+def make_dict_form(form_data):
+    form_dict = {}
+
+    for att in ATTRIBUTES:
+        if att in NUM_VALS:
+            form_dict[att] = int(form_data[att])
+            continue
+
+        form_dict[att] = form_data[att]
+    
+    for att in ATTRIBUTES_BOOL:
+        form_dict[att] = True if form_data.get(att) == "on" else False
+
+    return form_dict
+
+# turn data from a db row into a dict.
+def db_data_2_dict(db_data):
+    db_dict = {}
+
+    for i, att in enumerate(ATTRIBUTES_WHOLE):
+        db_dict[att] = db_data[i]
+
+    return db_dict
+#------------------------------------------------------------
+# /Custom function
+#------------------------------------------------------------
+
+
+
+
 #------------------------------------------------------------
 # the index page
 #------------------------------------------------------------
@@ -493,33 +529,3 @@ def summary():
 if __name__ == '__main__':
     alloc_port = os.environ['CS1999_PORT']
     app.run(debug=True, host="0.0.0.0", port=alloc_port)
-
-
-#------------------------------------------------------------
-# Custom function
-#------------------------------------------------------------
-# take data from form of a page, and turn it into a dict,
-# with each attributes correct data type (e.g., number of wheel should be integers.)
-def make_dict_form(form_data):
-    form_dict = {}
-
-    for att in ATTRIBUTES:
-        if att in NUM_VALS:
-            form_dict[att] = int(form_data[att])
-            continue
-
-        form_dict[att] = form_data[att]
-    
-    for att in ATTRIBUTES_BOOL:
-        form_dict[att] = True if form_data.get(att) == "on" else False
-
-    return form_dict
-
-# turn data from a db row into a dict.
-def db_data_2_dict(db_data):
-    db_dict = {}
-
-    for i, att in enumerate(ATTRIBUTES_WHOLE):
-        db_dict[att] = db_data[i]
-
-    return db_dict
