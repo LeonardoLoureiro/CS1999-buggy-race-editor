@@ -116,7 +116,30 @@ AI = [
 	"random"
 ]
 
-
+# list of all default values, here so loading a single table to be edited could be used accross
+# multiple page, that way any changes there would occur on all page using such (proccess) table.
+DEFAULT_VALS = [
+    "NULL", #this is supposed to be the id of a buggy, but since this will be used for creating, it won't be used.
+    "4",
+    "petrol",
+    "1",
+    "none",
+    "0",
+    "0",
+    "#ffffff",
+    "plain",
+    "#000000",
+    "knobbly",
+    "4",
+    "none",
+    "none",
+    "0",
+    0,
+    0,
+    0,
+    0,
+    "steady"
+]
 
 
 #------------------------------------------------------------
@@ -226,7 +249,6 @@ def choose():
 @app.route('/edit', methods = ['POST', 'GET'])
 def edit_buggy():
     if request.method == 'GET':
-        
         # if no 'buggy_id' is passed, i.e., this is the first time 
         # accessing page, then it should first re-route to 'choose', which then 
         # will provide the buggy_id needed to continue.
@@ -251,9 +273,9 @@ def edit_buggy():
                                 armor=ARMOR,
                                 attacks=ATTACKS,
                                 ai=AI,
+                                form_dest="edit",
                                 vals=record)
     
-
     elif request.method == 'POST':
         msg=""
 
@@ -357,7 +379,9 @@ def create_buggy():
             tyres=TYRES,
             armor=ARMOR,
             attacks=ATTACKS,
-            ai=AI)
+            ai=AI,
+            vals=DEFAULT_VALS,
+            form_dest="create")
     
     elif request.method == 'POST':
         msg = ""

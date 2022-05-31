@@ -1,0 +1,213 @@
+<form name="buggyForm" onsubmit="return main();" action="/{{form_dest}}" method="post">
+    <input type="hidden" name="id" value="{{vals[0]}}">
+    <table>
+  
+      <tr>
+        <th>
+          <label for="qty_wheels">Number of Wheels:</label>
+        </th>
+        <th>
+          <input type="number" name="qty_wheels" value="{{vals[1]}}" step ="2" min="4" max="99"/>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="power_type">Power Type:</label>
+        </th>
+        <th>
+          <select name="power_type">
+            <!-- This snippet of code dynamicall generate HTML text by going through the 
+                  list of options passed through, and setting it as the default option
+                  if user has previously selected it based on what it gets from DB. 
+                  Better than hard-coding everything which is totally what I did do 
+                  as this was absolutely the first solution... -->
+            {% for OP in power_type_ops[:-1] %}
+              <option {% if vals[2] == OP %} selected {%endif%} value="{{OP}}">{{OP.title()}}</option>
+            {% endfor %}
+          </select>
+        </th>
+      </tr>
+      
+      <tr>
+        <th>
+          <label for="power_units">Power units:</label>
+        </th>
+        <th>
+          <input type="number" value="{{vals[3]}}" name="power_units" step ="1" min="1" max="99"/>
+        </th>
+      </tr>
+  
+      <tr>
+        <th>
+          <label for="aux_power_type">Aux Power Type:</label>
+        </th>
+        <th>
+          <select name="aux_power_type"> 
+            {% for OP in power_type_ops %}
+              <option {% if vals[4] == OP %} selected {%endif%} value="{{OP}}">{{OP.title()}}</option>
+            {% endfor %}
+          </select>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="aux_power_units">Aux Power Units:</label>
+        </th>
+        <th>
+          <input type="number" name="aux_power_units" value="{{vals[5]}}" step ="1" min="0" max="99"/>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="hamster_booster">Hamster Booster:</label>
+        </th>
+        <th>
+          <input type="number" name="hamster_booster" value="{{vals[6]}}" step ="1" min="0" max="99"/>
+        </th>
+      </tr>
+      
+      <tr>
+        <th>
+          <label for="flag_color">Flag color:</label>
+        </th>
+        <th>
+          <input type="color" value="{{vals[7]}}" name="flag_color" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="flag_pattern">Flag Pattern:</label>
+        </th>
+        <th>
+          <select name="flag_pattern">  
+            {% for OP in flag_patts %}
+              <option {% if vals[8] == OP %} selected {%endif%} value="{{OP}}">{{OP.title()}}</option>
+            {% endfor %}
+          </select>
+        </th>
+      </tr>      
+    
+      <tr>
+        <th>
+          <label for="flag_color_secondary">Flag Color Secondary:</label>
+        </th>
+        <th>
+          <input type="color" value="{{vals[9]}}" name="flag_color_secondary" />
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="tyres">Tyres:</label>
+        </th>
+        <th>
+          <select name="tyres">
+            {% for OP in tyres %}
+              <option {% if vals[8] == OP %} selected {%endif%} value="{{OP}}">{{OP.title()}}</option>
+            {% endfor %}
+          </select>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="qty_tyres">Number of Tyres:</label>
+        </th>
+        <th>
+          <input type="number" name="qty_tyres" value="{{vals[11]}}" step ="2" min="4" max="99"/>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="armour">Armour:</label>
+        </th>
+        <th>
+          <select name="armour">
+            {% for OP in armor %}
+              <option {% if vals[12] == OP %} selected {%endif%} value="{{OP}}">{{OP.title()}}</option>
+            {% endfor %}
+          </select>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="attack">Attack:</label>
+        </th>
+        <th>
+          <select name="attack">
+            {% for OP in attacks %}
+              <option {% if vals[13] == OP %} selected {%endif%} value="{{OP}}">{{OP.title()}}</option>
+            {% endfor %}
+          </select>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="qty_attacks">Number of Attacks:</label>
+        </th>
+        <th>
+          <input type="number" name="qty_attacks" value="{{vals[14]}}" step ="1" min="0" max="99"/>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="fireproof">Fireproof:</label>
+        </th>
+        <th>
+          <input type="checkbox" name="fireproof" {% if vals[15] %} checked="checked" {% endif %}/>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="insulated">Insulated:</label>
+        </th>
+        <th>
+          <input type="checkbox" name="insulated" {% if vals[16] %} checked="checked" {% endif %}/>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="antibiotic">Antibiotic:</label>
+        </th>
+        <th>
+          <input type="checkbox" name="antibiotic" {% if vals[17] %} checked="checked" {% endif %}/>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="banging">Banging:</label>
+        </th>
+        <th>
+          <input type="checkbox" name="banging" {% if vals[18] %} checked="checked" {% endif %}/>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <label for="algo">Algo:</label>
+        </th>
+        <th>
+          <select name="algo">
+            {% for OP in ai %}
+              <option {% if vals[19] == OP %} selected {%endif%} value="{{OP}}">{{OP.title()}}</option>
+            {% endfor %}
+          </select>
+        </th>
+      </tr>
+  
+    </table>
+  
+    <input type="submit" class="button">
+  
+  </form>
