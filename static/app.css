@@ -59,6 +59,7 @@ table {
   margin-right: auto ;
 }
 table td, table th {
+  text-align: center ;
   padding: 0.25em;
   border: 1px solid #999999;
   padding: 0.5rem;

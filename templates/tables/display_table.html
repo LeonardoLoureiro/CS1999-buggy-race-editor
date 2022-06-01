@@ -1,14 +1,86 @@
+
 <style>
+  /* First display the colours user has chosen */
   td.prim-col {
-    background-color: {{ buggy['flag_color'] }} ;
+      background-color: {{ buggy['flag_color'] }} ;
   } 
 
   td.sec-col {
-    background-color: {{ buggy['flag_color_secondary'] }} ;
-  } 
+      background-color: {{ buggy['flag_color_secondary'] }} ;
+  }
+
+  /* Then render their chosen pattern */
+  /* Plain is simlpy just the primary colour */
+  .plain {
+      background-color: {{ buggy['flag_color'] }} ;
+  }
+
+  /* Vertical stripe, the primary colour being first of all stripe */
+  .vstripe {
+      background-image: repeating-linear-gradient(
+      90deg,
+      {{ buggy['flag_color'] }},
+      {{ buggy['flag_color'] }} 0.5em,
+      {{ buggy['flag_color_secondary'] }} 0.5em,
+      {{ buggy['flag_color_secondary'] }} 1em
+      )
+  }
+
+  /* Horizontal stripes */
+  .hstripe {
+      background-image: repeating-linear-gradient(
+      0deg,
+      {{ buggy['flag_color'] }},
+      {{ buggy['flag_color'] }} 0.5em,
+      {{ buggy['flag_color_secondary'] }} 0.5em,
+      {{ buggy['flag_color_secondary'] }} 1em
+      )
+  }
+
+  /* diagonal stripe, we've used this before - the sidebar panel's bg */
+  .dstripe {
+      background-image: repeating-linear-gradient(
+      45deg,
+      {{ buggy['flag_color'] }},
+      {{ buggy['flag_color'] }} 0.5em,
+      {{ buggy['flag_color_secondary'] }} 0.5em,
+      {{ buggy['flag_color_secondary'] }} 1em
+      )
+  }
+
+  /* Checker bg */
+  .checker {
+      background: repeating-conic-gradient({{ buggy['flag_color'] }} 0% 25%, 
+                                          {{ buggy['flag_color_secondary'] }} 0% 50%)
+                                          50% / 20px 20px
+  }
+
+  /* A circle the colour of the secondary colour, bg is primary */
+  .spot {
+      background-color: {{ buggy['flag_color'] }} ;
+      vertical-align: middle ;
+  }
+
+  .spot-circle {
+      background-color:{{ buggy['flag_color_secondary'] }};
+      border-radius: 50% ;
+      display: block;
+      height: 20px;
+      width: 20px;
+      margin: auto;
+      line-height: 50px;
+      text-align: center
+  }
 </style>
 
 <table class="display-table">
+
+  <thead>
+    <td> Attribute </td>
+    <td> Value </td>
+  </thead>
+
+  <tbody>
     <tr>
       <td>ID:</td>
       <td> {{ buggy['id'] }} </td>
@@ -65,6 +137,15 @@
     <tr>
       <td>Flag Color Secondary:</td>
       <td class="sec-col">  </td>
+    </tr>
+
+    <tr>
+      <td>Rendering of flag:</td>
+      <td class="{{buggy['flag_pattern']}}"> 
+        {% if buggy['flag_pattern'] == "spot" %}
+          <span class="spot-circle"></span>
+        {% endif %}
+      </td>
     </tr>
 
 
@@ -137,5 +218,6 @@
       <td>Mass:</td>
       <td> {{ buggy['mass'] }}Kg </td>
     </tr>
+  </tbody>
 
 </table>
