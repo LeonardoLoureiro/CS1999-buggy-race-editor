@@ -166,7 +166,7 @@ def make_dict_form(form_data):
         form_dict[att] = form_data[att]
     
     for att in ATTRIBUTES_BOOL:
-        form_dict[att] = True if form_data.get(att) == "on" else False
+        form_dict[att] = 1 if form_data.get(att) == "on" else 0
 
     return form_dict
 
@@ -207,14 +207,15 @@ def delete():
             con = sql.connect(DATABASE_FILE)
             con.row_factory = sql.Row
             cur = con.cursor()
-            cur.execute("SELECT * FROM buggies WHERE id=?;", buggy_id)
+            # 
+            cur.execute("SELECT * FROM buggies WHERE id=(?) ;", (buggy_id,))
             record = cur.fetchone() ;
 
-        except:
+        except Exception as e:
             con.rollback()
             msg = "error in retrieving operation"
 
-            return render_template("update.html", msg=msg)
+            return render_template("updated.html", msg=e)
 
         finally:
             con.close()        
@@ -226,13 +227,13 @@ def delete():
     elif request.method == 'POST':
         buggy_id = request.form['buggy_id']
 
-        exec_str = "DELETE FROM buggies WHERE id=?;"
+        exec_str = "DELETE FROM buggies WHERE id=(?) ;"
         
         try:
             con = sql.connect(DATABASE_FILE)
             con.row_factory = sql.Row
             cur = con.cursor()
-            cur.execute(exec_str, buggy_id)
+            cur.execute(exec_str, (buggy_id,))
             con.commit()
 
             msg = "Record successfully saved"
@@ -285,6 +286,10 @@ def choose():
         elif next_step == "delete":
             return redirect(url_for('delete',
                                     buggy_id=chosen_buggy))
+        
+        elif next_step == "json":
+            return redirect(url_for('summary',
+                                    buggy_id=chosen_buggy))
 
 
 #------------------------------------------------------------
@@ -309,7 +314,7 @@ def edit_buggy():
         con = sql.connect(DATABASE_FILE)
         con.row_factory = sql.Row
         cur = con.cursor()
-        cur.execute("SELECT * FROM buggies WHERE id=?", buggy_id)
+        cur.execute("SELECT * FROM buggies WHERE id=(?) ;", (buggy_id,))
         record = cur.fetchone() ;
 
         return render_template("edit.html", 
@@ -344,38 +349,38 @@ def edit_buggy():
 
                 # now set the new cost and mass of buggie to db...
                 cost_mass_pair = calc_cost_mass(buggy_atts)
-                exec_str_cost = "UPDATE buggies set cost=? WHERE id=?"
+                exec_str_cost = "UPDATE buggies set cost=? WHERE id=(?) ;"
                 cur.execute(
                     exec_str_cost,
-                    (str(cost_mass_pair[0]), buggy_id)
+                    (str(cost_mass_pair[0]), (buggy_id,))
                 )
 
-                exec_str_mass = "UPDATE buggies set mass=? WHERE id=?"
+                exec_str_mass = "UPDATE buggies set mass=? WHERE id=(?)"
                 cur.execute(
                     exec_str_mass,
-                    (str(cost_mass_pair[1]), buggy_id)
+                    (str(cost_mass_pair[1]), (buggy_id,))
                 )
 
 
                 for att in ATTRIBUTES:
                     form_att = request.form[att]
 
-                    exec_str = "UPDATE buggies set %s=? WHERE id=?" % att
+                    exec_str = "UPDATE buggies set %s=? WHERE id=(?)" % att
 
                     cur.execute(
                     exec_str,
-                    (form_att, buggy_id)
+                    (form_att, (buggy_id,))
                 )
 
                 # now a separate FOR loop for boolean values
                 for att in ATTRIBUTES_BOOL:
                     form_att = True if request.form.get(att) == "on" else False
 
-                    exec_str = "UPDATE buggies set %s=? WHERE id=?" % att
+                    exec_str = "UPDATE buggies set %s=? WHERE id=(?)" % att
 
                     cur.execute(
                     exec_str,
-                    (form_att, buggy_id)
+                    (form_att, (buggy_id,))
                 )
 
 
@@ -433,9 +438,14 @@ def create_buggy():
                 exec_str_list = ', '.join('?' * len(buggy_atts))
                 exec_str_att_names = ', '.join( buggy_atts.keys() )
 
+                
+
                 exec_str = "INSERT INTO buggies (%s) VALUES (%s);" % (exec_str_att_names, exec_str_list)
 
                 val_list_as_str = [str(a) for a in buggy_atts.values()]
+                print(exec_str_list)
+                print(exec_str_att_names)
+                print(val_list_as_str)
                 # ^must turn all vals into strings, since SQL does NOT like anything else when assigning variables
                 #  to be entered into a db.
                 
@@ -470,7 +480,7 @@ def show_buggy():
     con = sql.connect(DATABASE_FILE)
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("SELECT * FROM buggies WHERE id=?", buggy_id)
+    cur.execute("SELECT * FROM buggies WHERE id=(?) ;", (buggy_id,))
     record = cur.fetchone(); 
     
     return render_template("show.html", buggy=record)
@@ -516,10 +526,15 @@ def poster():
 #------------------------------------------------------------
 @app.route('/json')
 def summary():
+    if request.args.get('buggy_id') is None:
+        return redirect(url_for("choose", next_step="json"))
+    
+    buggy_id = str(request.args.get('buggy_id'))
+
     con = sql.connect(DATABASE_FILE)
     con.row_factory = sql.Row
     cur = con.cursor()
-    cur.execute("SELECT * FROM buggies WHERE id=? LIMIT 1", (DEFAULT_BUGGY_ID))
+    cur.execute("SELECT * FROM buggies WHERE id=(?) LIMIT 1", (buggy_id,))
 
     buggies = dict(zip([column[0] for column in cur.description], cur.fetchone())).items() 
     return jsonify({ key: val for key, val in buggies if (val != "" and val is not None) })
