@@ -64,6 +64,10 @@ table td, table th {
 table th {
   text-align: center ;
 }
+thead {
+  background-color: #c4c4c4 ;
+  font-size: larger ;
+}
 .spacer {
   margin: 3em 0;
 }

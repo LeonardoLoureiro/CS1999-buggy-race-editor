@@ -11,7 +11,7 @@
     <form action="{{next_step}}" method="POST">
         <select name="buggy_id">
             {% for OP in options %}
-                <option value="{{OP}}">{{OP}}</option>
+                <option value="{{OP[0]}}">{{OP[1]}}</option>
             {% endfor %}
         </select>
 

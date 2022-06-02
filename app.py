@@ -259,14 +259,14 @@ def choose():
         con = sql.connect(DATABASE_FILE)
         con.row_factory = sql.Row
         cur = con.cursor()
-        cur.execute("SELECT id FROM buggies;")
+        cur.execute("SELECT id, name FROM buggies;")
         record = cur.fetchall() ;
 
         ids = []
         # since record returns all data from a row, we must sanitise it
         # before redering it.
         for r in record:
-            ids.append( r[0] ) # the first value of a row is the primary id key...
+            ids.append( r ) # the first value of a row is the primary id key...
 
         return render_template('choose.html', 
                                 options=ids, 
