@@ -9,34 +9,38 @@
       background-color: {{ buggy['flag_color_secondary'] }} ;
   }
 
+  {% if buggy['flag_pattern'] == "plain" %}
   /* Then render their chosen pattern */
   /* Plain is simlpy just the primary colour */
   .plain {
       background-color: {{ buggy['flag_color'] }} ;
   }
 
-  /* Vertical stripe, the primary colour being first of all stripe */
-  .vstripe {
-      background-image: repeating-linear-gradient(
-      90deg,
-      {{ buggy['flag_color'] }},
-      {{ buggy['flag_color'] }} 0.5em,
-      {{ buggy['flag_color_secondary'] }} 0.5em,
-      {{ buggy['flag_color_secondary'] }} 1em
-      )
-  }
+  {% elif buggy['flag_pattern'] == "vstripe" %}
+    /* Vertical stripe, the primary colour being first of all stripe */
+    .vstripe {
+        background-image: repeating-linear-gradient(
+        90deg,
+        {{ buggy['flag_color'] }},
+        {{ buggy['flag_color'] }} 0.5em,
+        {{ buggy['flag_color_secondary'] }} 0.5em,
+        {{ buggy['flag_color_secondary'] }} 1em
+        )
+    }
 
-  /* Horizontal stripes */
-  .hstripe {
-      background-image: repeating-linear-gradient(
-      0deg,
-      {{ buggy['flag_color'] }},
-      {{ buggy['flag_color'] }} 0.5em,
-      {{ buggy['flag_color_secondary'] }} 0.5em,
-      {{ buggy['flag_color_secondary'] }} 1em
-      )
-  }
+  {% elif buggy['flag_pattern'] == "hstripe" %}
+    /* Horizontal stripes */
+    .hstripe {
+        background-image: repeating-linear-gradient(
+        0deg,
+        {{ buggy['flag_color'] }},
+        {{ buggy['flag_color'] }} 0.5em,
+        {{ buggy['flag_color_secondary'] }} 0.5em,
+        {{ buggy['flag_color_secondary'] }} 1em
+        )
+    }
 
+  {% elif buggy['flag_pattern'] == "dstripe" %}
   /* diagonal stripe, we've used this before - the sidebar panel's bg */
   .dstripe {
       background-image: repeating-linear-gradient(
@@ -47,14 +51,16 @@
       {{ buggy['flag_color_secondary'] }} 1em
       )
   }
-
+  
+  {% elif buggy['flag_pattern'] == "checker" %}
   /* Checker bg */
   .checker {
       background: repeating-conic-gradient({{ buggy['flag_color'] }} 0% 25%, 
                                           {{ buggy['flag_color_secondary'] }} 0% 50%)
                                           50% / 20px 20px
   }
-
+  
+  {% elif buggy['flag_pattern'] == "spot" %}
   /* A circle the colour of the secondary colour, bg is primary */
   .spot {
       background-color: {{ buggy['flag_color'] }} ;
@@ -71,6 +77,7 @@
       line-height: 50px;
       text-align: center
   }
+  {% endif %}
 </style>
 
 <table class="display-table">
