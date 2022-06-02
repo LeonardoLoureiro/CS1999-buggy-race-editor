@@ -525,6 +525,28 @@ def summary():
     return jsonify({ key: val for key, val in buggies if (val != "" and val is not None) })
 
 
+
+
+#------------------------------------------------------------
+# the login page
+#------------------------------------------------------------
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('auth/login.html')
+    
+    elif request.method =='POST':
+        return "Ok lol"
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'GET':
+        return render_template('auth/signup.html')
+    
+    elif request.method =='POST':
+        return "Ok lol"
+
 # You shouldn't need to add anything below this!
 if __name__ == '__main__':
     alloc_port = os.environ['CS1999_PORT']
