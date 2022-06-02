@@ -1,6 +1,15 @@
 <form name="buggyForm" onsubmit="return main();" action="/{{form_dest}}" method="post">
     <input type="hidden" name="id" value="{{vals[0]}}">
     <table class="form-table">
+
+      <tr>
+        <th>
+          <label for="name">Name:</label>
+        </th>
+        <th>
+          <input type="string" name="name" value="{{vals[20]}}" maxlength="35"/>
+        </th>
+      </tr>
   
       <tr>
         <th>
@@ -208,6 +217,6 @@
   
     </table>
   
-    <input type="submit" class="button">
+    <input id="form-button" type="submit" class="button">
   
   </form>

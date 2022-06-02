@@ -40,13 +40,14 @@ ATTRIBUTES_WHOLE = [
 	"banging",
 	"algo",
 	"cost",
-	"mass"
+	"mass",
+	"name"
 ]
 
 # List of all attributes a buggy has, this way, no hard coding it again is needed
 # and rather it can be iterated over. All attributed except those which are of bool
 # nature.
-ATTRIBUTES = ATTRIBUTES_WHOLE[1:15] + ATTRIBUTES_WHOLE[-3:-2]
+ATTRIBUTES = ATTRIBUTES_WHOLE[1:15] + ['algo', 'name']
 
 
 

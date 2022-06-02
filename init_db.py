@@ -25,28 +25,28 @@ connection.execute("""
 
   CREATE TABLE IF NOT EXISTS buggies (
     id                    INTEGER PRIMARY KEY,
-    --car_name              VARCHAR(20) DEFAULT 'car_', comment this out when ready...
     qty_wheels            INTEGER DEFAULT 4,
-    power_type            VARCHAR(20) DEFAULT 'petrol',
+    power_type            VARCHAR(10) DEFAULT 'petrol',
     power_units           INTEGER DEFAULT 1,
-    aux_power_type        VARCHAR(20) DEFAULT NULL,
+    aux_power_type        VARCHAR(10) DEFAULT 'none',
     aux_power_units       INTEGER DEFAULT 0,
     hamster_booster       INTEGER DEFAULT 0,
-    flag_color            VARCHAR(20) DEFAULT '#ffffff',
-    flag_pattern          VARCHAR(20) DEFAULT 'plain',
-    flag_color_secondary  VARCHAR(20) DEFAULT '#000000',
-    tyres                 VARCHAR(20) DEFAULT 'knobbly',
+    flag_color            VARCHAR(8) DEFAULT '#ffffff',
+    flag_pattern          VARCHAR(10) DEFAULT 'plain',
+    flag_color_secondary  VARCHAR(8) DEFAULT '#000000',
+    tyres                 VARCHAR(10) DEFAULT 'knobbly',
     qty_tyres             INTEGER DEFAULT 4,
-    armour                VARCHAR(20) DEFAULT 'none',
-    attack                VARCHAR(20) DEFAULT 'none',
+    armour                VARCHAR(12) DEFAULT 'none',
+    attack                VARCHAR(10) DEFAULT 'none',
     qty_attacks           INTEGER DEFAULT 0,
     fireproof             BOOLEAN DEFAULT FALSE,
     insulated             BOOLEAN DEFAULT FALSE,
     antibiotic            BOOLEAN DEFAULT FALSE,
     banging               BOOLEAN DEFAULT FALSE,
-    algo                  VARCHAR(20) DEFAULT 'steady',
-    cost                  FLOAT DEFAULT 0,
-    mass                  FLOAT DEFAULT 0
+    algo                  VARCHAR(10) DEFAULT 'steady',
+    cost                  FLOAT DEFAULT 64.00,
+    mass                  FLOAT DEFAULT 82.00,
+    name                  VARCHAR(35) DEFAULT 'car'
   )
 """)
 
