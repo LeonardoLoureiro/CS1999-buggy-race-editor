@@ -1,48 +1,51 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <link href="static/app.css?{{ range(1, 9999) | random }}" media="screen, projector, print" rel="stylesheet" type="text/css" />
-    </head>
+  <head>
+    <meta charset="utf-8" />
+    <link href="static/app.css?{{ range(1, 9999) | random }}" media="screen, projector, print" rel="stylesheet" type="text/css" />
+  </head>
 
-    <body>
-        <div class="main-content">
-            <div id="login-content">
-                <h1>
-                    Signup
-                </h1>
+  <body>
+    <script type="text/javascript" src="static/auth_validation.js"></script>
 
-                <form name="loginForm" action="/signup" method="post">
-                    <table>
-                        <tr>
-                            <th>
-                              <label for="email">Email:</label>
-                            </th>
-                            <th>
-                              <input type="email" id="email" name="email"/>
-                            </th>
-                        </tr>
-                        
-                        <tr>
-                            <th>
-                              <label for="pwd">Password:</label>
-                            </th>
-                            <th>
-                              <input type="password" id="psw" name="psw"/>
-                            </th>
-                        </tr>
+    <div class="login-content">
+      <h1> Signup </h1>
 
-                        <tr>
-                            <th>
-                              <label for="pwd-check">Retype password:</label>
-                            </th>
-                            <th>
-                              <input type="password" id="pwd-check" name="pwd-check"/>
-                            </th>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-        </div>
-    </body>
+      <form name="signupForm" onsubmit="return main();" action="/signup" method="post">
+        <table>
+          <tr>
+            <th>
+              <label for="email">Email:</label>
+            </th>
+            
+            <th>
+              <input type="email" id="email" name="email"/>
+            </th>
+          </tr>
+          
+          <tr>
+            <th>
+              <label for="pwd">Password:</label>
+            </th>
+            <th>
+              <input type="password" id="pwd" name="psw"/>
+            </th>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="pwd-check">Retype password:</label>
+            </th>
+            <th>
+              <input type="password" id="pwd-check" name="pwd-check"/>
+            </th>
+          </tr>
+        </table>
+
+        <a href="/" class="button">&lt Home</a>
+        <a href="/login" class="button">Login</a>
+        <input type="submit" class="button">
+      </form>
+    </div>
+  </body>
 </html>

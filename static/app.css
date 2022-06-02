@@ -22,7 +22,7 @@ body {
   min-height: 100% ;
 }
 h1 {
-  margin: 0 0 1em 0;
+  margin: 0.5em 0 1em 0;
 }
 p {
   margin: 1em 0;
@@ -47,9 +47,6 @@ input {
 }
 input.button {
   background-color: #99ff99;
-
-  margin-left: auto ;
-  margin-right: auto ;
 }
 table {
   border: 1px solid #000000;
@@ -165,4 +162,18 @@ div.choose {
 
 .auth-buttons a {
   display: flex ;
+}
+
+/* Login/signup pages */
+.login-content {
+  text-align: center ;
+  padding: 5% ;
+}
+
+input#form-button {
+  align-content: center ;
+}
+
+a#home-button {
+  margin-left: 2em ;
 }
