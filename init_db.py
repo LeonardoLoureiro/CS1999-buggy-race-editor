@@ -44,8 +44,8 @@ connection.execute("""
     antibiotic            BOOLEAN DEFAULT FALSE,
     banging               BOOLEAN DEFAULT FALSE,
     algo                  VARCHAR(10) DEFAULT 'steady',
-    cost                  FLOAT DEFAULT 64.00,
-    mass                  FLOAT DEFAULT 82.00,
+    cost                  FLOAT DEFAULT 64.0,
+    mass                  FLOAT DEFAULT 82.0,
     name                  VARCHAR(35) DEFAULT 'car'
   )
 """)

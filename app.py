@@ -348,49 +348,29 @@ def edit_buggy():
                 buggy_atts = make_dict_form(request.form)
 
 
-                # now set the new cost and mass of buggie to db...
+                # # now set the new cost and mass of buggie to db...
                 cost_mass_pair = calc_cost_mass(buggy_atts)
-                exec_str_cost = "UPDATE buggies set cost=? WHERE id=(?) ;"
-                cur.execute(
-                    exec_str_cost,
-                    (str(cost_mass_pair[0]), (buggy_id,))
-                )
+                buggy_atts['cost'] = str(cost_mass_pair[0])
+                buggy_atts['mass'] = str(cost_mass_pair[1])
+                
+                str_atts = ', '.join(ATTRIBUTES_WHOLE[1:])
+                str_ques_marks = ', '.join('?' * len(ATTRIBUTES_WHOLE[1:]))
 
-                exec_str_mass = "UPDATE buggies set mass=? WHERE id=(?)"
-                cur.execute(
-                    exec_str_mass,
-                    (str(cost_mass_pair[1]), (buggy_id,))
-                )
+                form_att_vals = [str(buggy_atts[a]) for a in ATTRIBUTES_WHOLE[1:]]
 
+                exec_str = "UPDATE buggies SET (%s) = (%s) WHERE id=(?) ;" % (str_atts, str_ques_marks)
 
-                for att in ATTRIBUTES:
-                    form_att = request.form[att]
+                form_att_vals += (buggy_id, )
 
-                    exec_str = "UPDATE buggies set %s=? WHERE id=(?)" % att
-
-                    cur.execute(
-                    exec_str,
-                    (form_att, (buggy_id,))
-                )
-
-                # now a separate FOR loop for boolean values
-                for att in ATTRIBUTES_BOOL:
-                    form_att = True if request.form.get(att) == "on" else False
-
-                    exec_str = "UPDATE buggies set %s=? WHERE id=(?)" % att
-
-                    cur.execute(
-                    exec_str,
-                    (form_att, (buggy_id,))
-                )
-
+                cur.execute(exec_str, (form_att_vals))
 
                 con.commit()
                 msg = "Record successfully saved"
         
-        except:
+        except Exception as ee:
             con.rollback()
             msg = "error in update operation"
+            msg = ee
         
         finally:
             con.close()
@@ -444,9 +424,6 @@ def create_buggy():
                 exec_str = "INSERT INTO buggies (%s) VALUES (%s);" % (exec_str_att_names, exec_str_list)
 
                 val_list_as_str = [str(a) for a in buggy_atts.values()]
-                print(exec_str_list)
-                print(exec_str_att_names)
-                print(val_list_as_str)
                 # ^must turn all vals into strings, since SQL does NOT like anything else when assigning variables
                 #  to be entered into a db.
                 
