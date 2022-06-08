@@ -142,3 +142,6 @@ dmypy.json
 
 # just my notes
 NOTES.txt
+
+# any database created, be it for buggies or users
+*.db
