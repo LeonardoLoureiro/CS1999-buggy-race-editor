@@ -10,6 +10,7 @@
       <h1> Login </h1>
 
       <form name="loginForm" action="/login" method="post">
+        {{ form.csrf_token }}
         <table>
           <tr>
             <th>
@@ -17,7 +18,7 @@
             </th>
             
             <th>
-              <input type="email" id="email" name="email" />
+              {{ form.email }}
             </th>
           </tr>
 
@@ -27,15 +28,22 @@
             </th>
             
             <th>
-              <input type="password" id="psw" name="psw" />
+              {{ form.password }}
             </th>
           </tr>
         </table>
 
         <a href="/" class="button">&lt Home</a>
         <a href="/signup" class="button">Signup</a>
-        <input type="submit" class="button">
+        {{ form.submit(class="button") }}
       </form>
+      
+      {% if msg %}
+        <div>
+          <h5> {{msg}} </h5>
+        </div>
+      {% endif %}
+
     </div>
   </body>
 </html>

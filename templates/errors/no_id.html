@@ -1,0 +1,18 @@
+<!--
+    This file is reserved when user attempts to change buggy_id manually on top of 
+    browser's search bar. If no such id exists, then it re-routes to this page.
+-->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="not-found">
+    <h2>
+        Buggy ID not found, please try again.
+    </h2>
+
+    <a href="/{{ go_back }}" class="button">Go Back</a>
+</div>
+
+{% endblock %}

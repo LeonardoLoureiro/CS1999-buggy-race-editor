@@ -1,17 +1,37 @@
 
 from crypt import methods
-from flask import Flask, Blueprint, render_template, request, jsonify, redirect, url_for
+from genericpath import exists
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 import sqlite3 as sql
 
-from scripts.scrapper import *
-from scripts.calcs import *
-from consts import *
-from scripts.form_edit import *
+from flask_login import login_required
+import flask_login
+from jsonschema import ValidationError
 
+from forms import BuggyAtts
+from models import Buggy
+
+try:
+    from scripts.scrapper import *
+    from scripts.calcs import *
+    from consts import *
+    from scripts.form_edit import *
+
+except ImportError:
+    from .scripts.scrapper import *
+    from .scripts.calcs import *
+    from .consts import *
+    from .scripts.form_edit import *
 
 # this essentially makes it so this file is 'independant' and can simply just be 'imported'
 # to the main file.
 routes = Blueprint('routes', __name__)
+
+try:
+    from main import db
+
+except ImportError:
+    from . import db
 
 #------------------------------------------------------------
 # the index page
@@ -22,6 +42,7 @@ def home():
     return render_template('index.html', server_url=BUGGY_RACE_SERVER_URL)
 
 @routes.route('/delete', methods=['GET', 'POST'])
+@login_required
 def delete():
     if request.method == 'GET':
         # if no id is given, then redirect to choose page, which will then return with an id,
@@ -78,7 +99,10 @@ def delete():
 # ask user to choose which buggy, by its id, to edit/view
 #------------------------------------------------------------
 @routes.route('/choose', methods=['GET', 'POST'])
+@login_required
 def choose():
+    # form = 
+
     if request.method == 'GET':
         next_step = request.args.get('next_step')
         con = sql.connect(DATABASE_FILE)
@@ -124,6 +148,7 @@ def choose():
 #  but if it's a GET request, just show the form with saved data filled out
 #------------------------------------------------------------
 @routes.route('/edit', methods = ['POST', 'GET'])
+@login_required
 def edit():
     if request.method == 'GET':
         # if no 'buggy_id' is passed, i.e., this is the first time 
@@ -175,7 +200,7 @@ def edit():
                 # It would be simple to use 'json.dumps' here, but we need 
                 # certain attributes to be integers so python can later use them
                 # for their respective calculations. 
-                buggy_atts = make_dict_form(request.form)
+                buggy_atts = calc_total_cost(request.form)
 
 
                 # # now set the new cost and mass of buggie to db...
@@ -208,70 +233,73 @@ def edit():
         return render_template("updated.html", msg = msg)
 
 
+
+
+
+
 #------------------------------------------------------------
 # creating a buggy:
 #  create a new buggy, with all the default values already filled out, 
 #  then post it to the DB, creating a new row.
 #------------------------------------------------------------
-@routes.route('/create', methods = ['POST', 'GET'])
+@routes.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_buggy():
+    form = Buggy()
+    
     if request.method == 'GET':
-
-        return render_template("create.html", 
-            power_type_ops=POWER_TYPE_OPS,
-            flag_patts=FLAG_PATT,
-            tyres=TYRES,
-            armor=ARMOR,
-            attacks=ATTACKS,
-            ai=AI,
-            vals=DEFAULT_VALS,
-            form_dest="create")
+        
+        form = set_defaults()
+        return render_template("create.html", form=form, form_dest="create")
     
     elif request.method == 'POST':
-        msg = ""
+        if form.validate_on_submit():
+            # first check no buggies exist with that same name within that particular user's account
+            # i.e., if that name is in the a row using user's id from 'users' table.
+            current_user_id = flask_login.current_user.id
 
-        try:
-            with sql.connect(DATABASE_FILE) as con:
-                cur = con.cursor()
+            cost, mass = calc_cost_mass_wtf(form)
 
-                buggy_atts = make_dict_form(request.form) 
-                # ^this will be used to calculate cost and mass of the buggy
-                # but first the data must be 'turned' into their correct
-                # respective data types for their calculations.
 
-                # now calculate them
-                cost_mass_pair = calc_cost_mass(buggy_atts)
+            existing_buggy_name = Buggy.query.filter_by(name=form.name.data, user_id=current_user_id).first()
 
-                # must add "cost" and "mass" to the dict which will be added to db.
-                buggy_atts['cost'] = cost_mass_pair[0]
-                buggy_atts['mass'] = cost_mass_pair[1]
+            if existing_buggy_name:
+                raise ValidationError("That buggy name already exists, please use a different one.")
 
-                exec_str_list = ', '.join('?' * len(buggy_atts))
-                exec_str_att_names = ', '.join( buggy_atts.keys() )
+            # now assing each variable to specific class attribute so it can be saved
+            buggy_class_vals = Buggy(
+                qty_wheels = form.qty_wheels.data,
+                power_type = form.power_type.data,
+                power_units = form.power_units.data,
+                aux_power_type = form.aux_power_type.data,
+                aux_power_units = form.aux_power_units.data,
+                hamster_booster = form.hamster_booster.data,
+                flag_color = form.flag_color.data,
+                flag_pattern = form.flag_pattern.data,
+                flag_color_secondary = form.flag_color_secondary.data,
+                tyres = form.tyres.data,
+                qty_tyres = form.qty_tyres.data,
+                armour = form.armour.data,
+                attack = form.attack.data,
+                qty_attacks = form.qty_attacks.data,
+                fireproof = form.fireproof.data,
+                insulated = form.insulated.data,
+                antibiotic = form.antibiotic.data,
+                banging = form.banging.data,
+                algo = form.algo.data,
+                cost = cost,
+                mass = mass,
+                name = form.name.data,
+                user_id = current_user_id
+            )
 
-                
-
-                exec_str = "INSERT INTO buggies (%s) VALUES (%s);" % (exec_str_att_names, exec_str_list)
-
-                val_list_as_str = [str(a) for a in buggy_atts.values()]
-                # ^must turn all vals into strings, since SQL does NOT like anything else when assigning variables
-                #  to be entered into a db.
-                
-                cur.execute(exec_str, val_list_as_str)
-
-                con.commit()
-
-                msg = "Record successfully saved"
+            db.session.add(buggy_class_vals)
+            db.session.commit()
+            msg = "Created Successfully"
         
-        except:
-            con.rollback()
-            msg = "error in update operation"
-        
-        finally:
-            con.close()
-            
-        
-        return render_template("updated.html", msg = msg)
+            return render_template("updated.html", msg = msg)
+    
+    return render_template("create.html", form=form, form_dest="create")
 
 
 #------------------------------------------------------------
@@ -279,6 +307,7 @@ def create_buggy():
 # after user chooses which to display
 #------------------------------------------------------------
 @routes.route('/show')
+@login_required
 def show():
     if request.args.get('buggy_id') is None:
         return redirect(url_for("routes.choose", next_step="show"))
@@ -338,6 +367,7 @@ def poster():
 #  the data, so in effect jsonify() is rendering the data.
 #------------------------------------------------------------
 @routes.route('/json')
+@login_required
 def summary():
     if request.args.get('buggy_id') is None:
         return redirect(url_for("routes.choose", next_step="json"))

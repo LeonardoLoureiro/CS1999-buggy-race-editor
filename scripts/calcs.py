@@ -28,7 +28,7 @@ BOOL = ["antibiotic", "banging", "fireproof", "insulated"]
 #   - hasmter boosters
 #   - power type
 #   - aux power type (a backup power type)
-def calc_total_cost(user_choices):
+def calc_total_cost_wtf(user_choices):
     total_cost = 0
 
     # retrive json of all atts costs
@@ -37,30 +37,32 @@ def calc_total_cost(user_choices):
     data = url_html.read()
     att_costs = json.loads(data.decode('utf-8'))
 
-    # first calc bool vals as they're straightforward to do
-    for bool_att in BOOL:
-        user_bool_choice = user_choices[bool_att]
+    # calc bool vals
+    if user_choices.antibiotic.data:
+        total_cost += att_costs['special']['antibiotic']['cost']
+    
+    if user_choices.banging.data:
+        total_cost += att_costs['special']['banging']['cost']
+    
+    if user_choices.fireproof.data:
+        total_cost += att_costs['special']['fireproof']['cost']
 
-        if user_bool_choice:
-            cost = att_costs['special'][bool_att]['cost']
-        
-        else:
-            cost = "0"
-        
-        total_cost += float(cost)
-
+    if user_choices.insulated.data:
+        total_cost += att_costs['special']['insulated']['cost']
 
     # calc tyres
-    user_num_tyres = user_choices['qty_tyres']
-    user_tyre_type = user_choices['tyres']
+    user_num_tyres = user_choices.qty_tyres.data
+    user_tyre_type = user_choices.tyres.data
     tyre_type_cost = att_costs['tyres'][user_tyre_type]['cost']
     total_cost += user_num_tyres * float(tyre_type_cost)
 
-    # calc armour, since you can only have 1 type we just add to total
+
+    # calc armour
+    # since you can only have 1 type we just add to total
     # HOWEVER, the cost changes when the num of wheels in a buggy
     # is >4. Which each wheel above 4, 10% of cost is added per wheel.
-    user_armour = user_choices['armour']
-    user_num_wheels = float(user_choices['qty_wheels'])
+    user_armour = user_choices.armour.data
+    user_num_wheels = user_choices.qty_wheels.data
 
     # if num of wheel >4, percentage addition is made but if 4, then it's simply
     # final calculation multipled by 1, so nothing changes unless it's >4. 
@@ -73,14 +75,16 @@ def calc_total_cost(user_choices):
     user_armour_cost = float(armour_cost) * remainder_wheels_cost
     total_cost += user_armour_cost
 
+
     # calc attack
-    user_num_attacks = user_choices['qty_attacks']
-    user_attack = user_choices['attack']
+    user_num_attacks = user_choices.qty_attacks.data
+    user_attack = user_choices.attack.data
     cost_attack = att_costs['attack'][user_attack]['cost']
-    total_cost += user_num_attacks * float(cost_attack)
+    total_cost += float(user_num_attacks) * float(cost_attack)
+
 
     # calc hasmter boosters
-    user_num_hams = user_choices['hamster_booster']
+    user_num_hams = user_choices.hamster_booster.data
     cost_of_hams = att_costs['special']['hamster_booster']['cost']
     total_cost += user_num_hams * float(cost_of_hams)
     
@@ -88,21 +92,20 @@ def calc_total_cost(user_choices):
     ## because 'none' is not included in the 'power_type' portion of 
     ## of the JSON, an IF condition must be made.
     # calc aux power type
-    user_aux_type = user_choices['aux_power_type']
+    user_aux_type = user_choices.aux_power_type.data
     if user_aux_type != "none":
-        user_num_aux_powers = user_choices['aux_power_units']
+        user_num_aux_powers = user_choices.aux_power_units.data
         cost_of_aux_type = att_costs['power_type'][user_aux_type]['cost']
         total_cost += user_num_aux_powers * float(cost_of_aux_type)
 
+
     # calc power types
-    user_power_type = user_choices['power_type']
-    user_num_powers = user_choices['power_units']
+    user_power_type = user_choices.power_type.data
+    user_num_powers = user_choices.power_units.data
     cost_of_power_type = att_costs['power_type'][user_power_type]['cost']
     total_cost += user_num_powers * float(cost_of_power_type)
 
-    
     return total_cost
-
 
 
 # This function calculates the total mass of a buggy
@@ -113,7 +116,7 @@ def calc_total_cost(user_choices):
 #   - attacks
 #   - power type
 #   - aux power type (a backup power type)
-def calc_total_mass(user_choices):
+def calc_total_mass_wtf(user_choices):
     total_mass = 0
 
     # retrive json of all atts weights (but in JSON called mass)
@@ -124,16 +127,16 @@ def calc_total_mass(user_choices):
 
     
     # calc tyres
-    user_num_tyres = user_choices['qty_tyres']
-    user_tyre_type = user_choices['tyres']
+    user_num_tyres = user_choices.qty_tyres.data
+    user_tyre_type = user_choices.tyres.data
     tyre_type_mass = att_costs['tyres'][user_tyre_type]['mass']
     total_mass += user_num_tyres * float(tyre_type_mass)
 
     # calc armour, since you can only have 1 type we just add to total
     # HOWEVER, the mass changes when the num of wheels in a buggy
     # is >4. Which each wheel above 4, 10% of mass is added per wheel.
-    user_armour = user_choices['armour']
-    user_num_wheels = float(user_choices['qty_wheels'])
+    user_armour = user_choices.armour.data
+    user_num_wheels = user_choices.qty_wheels.data
 
     # if num of wheel >4, percentage addition is made but if 4, then it's simply
     # final calculation multipled by 1, so nothing changes unless it's >4. 
@@ -147,8 +150,8 @@ def calc_total_mass(user_choices):
     total_mass += user_armour_mass
 
     # calc attack
-    user_num_attacks = user_choices['qty_attacks']
-    user_attack = user_choices['attack']
+    user_num_attacks = user_choices.qty_attacks.data
+    user_attack = user_choices.attack.data
     mass_attack = att_costs['attack'][user_attack]['mass']
     total_mass += user_num_attacks * float(mass_attack)
 
@@ -156,15 +159,15 @@ def calc_total_mass(user_choices):
     ## of the JSON, but still an option for the aux power type, 
     ## an IF condition must be made.
     # calc aux power type
-    user_aux_type = user_choices['aux_power_type']
+    user_aux_type = user_choices.aux_power_type.data
     if user_aux_type != "none":
-        user_num_aux_powers = user_choices['aux_power_units']
+        user_num_aux_powers = user_choices.aux_power_units.data
         mass_of_aux_type = att_costs['power_type'][user_aux_type]['mass']
         total_mass += user_num_aux_powers * float(mass_of_aux_type)
 
     # calc power types
-    user_power_type = user_choices['power_type']
-    user_num_powers = user_choices['power_units']
+    user_power_type = user_choices.power_type.data
+    user_num_powers = user_choices.power_units.data
     mass_of_power_type = att_costs['power_type'][user_power_type]['mass']
     total_mass += user_num_powers * float(mass_of_power_type)
 
@@ -172,9 +175,9 @@ def calc_total_mass(user_choices):
     return total_mass
 
 
-def calc_cost_mass(buggy_atts):
+def calc_cost_mass_wtf(buggy_wtform):
+    total_cost = calc_total_cost_wtf(buggy_wtform)
     
-    total_cost = calc_total_cost(buggy_atts)
-    total_mass = calc_total_mass(buggy_atts)
+    total_mass = calc_total_mass_wtf(buggy_wtform)
 
     return [total_cost, total_mass]

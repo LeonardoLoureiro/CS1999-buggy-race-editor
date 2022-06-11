@@ -148,7 +148,7 @@ div.choose {
 }
 
 .choose select {
-  width: 80px ; 
+  width: max-content ;
   text-align: center ;
 }
 
@@ -159,9 +159,10 @@ div.choose {
 /* Auth buttons */
 .auth-buttons {
   position: absolute ;
-  top: 10px;
-  right: 10px;
+  top: 0.5em ;
+  right: 2em ;
   display: flex ;
+  align-items: center ;
 }
 
 .auth-buttons a {
@@ -180,4 +181,21 @@ input#form-button {
 
 a#home-button {
   margin-left: 2em ;
+}
+
+.not-found {
+  text-align: center ;
+  padding-top: 5em ;
+}
+
+.update-msg span {
+  font-size: larger ;
+}
+
+.flashes {
+  background-color: tomato ;
+  color: black ;
+  text-align: center ;
+
+  max-width: inherit ;
 }

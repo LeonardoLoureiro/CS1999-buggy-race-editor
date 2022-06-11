@@ -11,15 +11,49 @@
     <div class="login-content">
       <h1> Signup </h1>
 
-      <form name="signupForm" onsubmit="return main();" action="/signup" method="post">
+      <form name="signupForm" onsubmit="return main();" action="{{ url_for( 'auth.signup' ) }}" method="post">
+        {{ form.csrf_token }}
         <table>
+
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <tr class="flashes">
+                <th colspan="2">
+                  {% for message in messages %}
+                    <p>{{ message }}</p>
+                  {% endfor %}
+                </th>
+              </tr>
+            {% endif %}
+          {% endwith %}
+
+          <tr>
+            <th>
+              <label for="f_name">First name:</label>
+            </th>
+            
+            <th>
+              {{ form.f_name }}
+            </th>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="l_name">Last name:</label>
+            </th>
+            
+            <th>
+              {{ form.l_name }}
+            </th>
+          </tr>
+
           <tr>
             <th>
               <label for="email">Email:</label>
             </th>
             
             <th>
-              <input type="email" id="email" name="email"/>
+              {{ form.email }}
             </th>
           </tr>
           
@@ -28,7 +62,7 @@
               <label for="pwd">Password:</label>
             </th>
             <th>
-              <input type="password" id="pwd" name="psw"/>
+              {{ form.password }}
             </th>
           </tr>
 
@@ -37,14 +71,14 @@
               <label for="pwd-check">Retype password:</label>
             </th>
             <th>
-              <input type="password" id="pwd-check" name="pwd-check"/>
+              {{ form.confirm }}
             </th>
           </tr>
         </table>
 
         <a href="/" class="button">&lt Home</a>
         <a href="/login" class="button">Login</a>
-        <input type="submit" class="button">
+        {{ form.submit(class="button") }}
       </form>
     </div>
   </body>
