@@ -11,7 +11,7 @@ function same_pass() {
   if (!(pass_1 == pass_2)) {
     alert("Passwords are not the same.") ;
     document.getElementsByName('password')[0].style.borderColor = "red";
-    document.getElementsByName('confirm')[0].style.borderColor = "red";
+    document.getElementsByName('confirm_pass')[0].style.borderColor = "red";
 
     return false ;
   } 

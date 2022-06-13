@@ -197,5 +197,11 @@ a#home-button {
   color: black ;
   text-align: center ;
 
-  max-width: inherit ;
+  line-height: 0px ;
+}
+
+#buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

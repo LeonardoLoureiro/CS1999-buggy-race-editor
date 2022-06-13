@@ -1,4 +1,5 @@
 """Sign-up & log-in forms."""
+import email
 from secrets import choice
 from flask_wtf import FlaskForm
 from jsonschema import ValidationError
@@ -13,13 +14,10 @@ from wtforms.validators import (
 )
 
 
-
 try:
-    from models import User, Buggy
     from consts import POWER_TYPE_OPS, FLAG_PATT, TYRES, ARMOR, ATTACKS, AI
 
 except ImportError:
-    from .models import User
     from .consts import POWER_TYPE_OPS, FLAG_PATT, TYRES, ARMOR, ATTACKS, AI
 
 class SignupForm(FlaskForm):
@@ -56,7 +54,7 @@ class SignupForm(FlaskForm):
         render_kw={"placeholder": "Password"}
     )
     
-    confirm = PasswordField(
+    confirm_pass = PasswordField(
         'Confirm Your Password',
         validators=[
             DataRequired(),
@@ -214,3 +212,65 @@ class DelBuggy(FlaskForm):
     buggy_id = HiddenField('buggy_id')
 
     submit = SubmitField('Delete')
+
+class ChangePass(FlaskForm):
+    """Form for changing a user's password"""
+
+    # first user must enter the current set password.
+    # This is best practice in the real world in case someone gets
+    # ahold of their device while logged in and cannot change password easily.
+    current_password = PasswordField(
+        'Password', 
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Password"}
+    )
+
+    new_password = PasswordField(
+        'Password', 
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Please Password"}
+    )
+
+    new_password_check = PasswordField(
+        'Password', 
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Please Password"}
+    )
+
+    submit = SubmitField('Change Password')
+
+class ChangeEmail(FlaskForm):
+    """Form for changing a user's password"""
+
+    # first user must enter the current set password.
+    # This is best practice in the real world in case someone gets
+    # ahold of their device while logged in and cannot change password easily.
+    current_password = PasswordField(
+        'Password', 
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Password"}
+    )
+
+    new_email = StringField(
+        'email',
+        validators=[
+            Length(min=6),
+            Email(message='Enter a valid email.'),
+            Length(min=3, max=60),
+            DataRequired()
+        ],
+        render_kw={"placeholder": "Email"}
+    )
+
+    new_email_check = StringField(
+        'email_check',
+        validators=[
+            Length(min=6),
+            Email(message='Enter a valid email.'),
+            Length(min=3, max=60),
+            DataRequired()
+        ],
+        render_kw={"placeholder": "Re-enter Email"}
+    )
+
+    submit = SubmitField('Change Email')

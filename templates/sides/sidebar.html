@@ -6,6 +6,11 @@
 <div id="sidebar">
     <div id="sidebar-buttons">
         <a href="/" class="button">Home</a>
+
+        {% if current_user.is_authenticated %}
+        <a href="/profile" class="button">Profile</a>
+        {% endif %}
+
         <a href="/create" class="button">Create a buggy</a>
         <a href="/delete" class="button">Delete a buggy</a>
         <a href="/edit" class="button">Edit buggy</a>
