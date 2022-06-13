@@ -1,196 +1,198 @@
 <form name="buggyForm" onsubmit="return main();" action="/{{form_dest}}" method="post">
-    {{ form.csrf_token }}
+  {{ form.csrf_token }}
 
-    {% if form.id %}
-      {{ form.id }}
-      {{ form.user_id }}
-    {% endif %}
-    
+  {% if form.id %}
+    {{ form.id }}
+    {{ form.user_id }}
+  {% endif %}
+  
 
-    <table class="form-table">
-      
-      <tr>
-        <th>
-          <label for="name">Buggy Name:</label>
-        </th>
-        <th>
-          {{ form.name }}
-        </th>
-      </tr>
+  <table class="form-table">
+    
+    <tr>
+      <th>
+        <label for="name">Buggy Name:</label>
+      </th>
+      <th>
+        {{ form.name }}
+      </th>
+    </tr>
+
+    <tr>
+      <th>
+        <label for="qty_wheels">Number of Wheels:</label>
+      </th>
+      <th>
+        {{ form.qty_wheels(step="2") }}
+      </th>
+    </tr>
   
-      <tr>
-        <th>
-          <label for="qty_wheels">Number of Wheels:</label>
-        </th>
-        <th>
-          {{ form.qty_wheels(step="2") }}
-        </th>
-      </tr>
+    <tr>
+      <th>
+        <label for="power_type">Power Type:</label>
+      </th>
+      <th>
+        {{ form.power_type }}
+      </th>
+    </tr>
     
-      <tr>
-        <th>
-          <label for="power_type">Power Type:</label>
-        </th>
-        <th>
-          {{ form.power_type }}
-        </th>
-      </tr>
-      
-      <tr>
-        <th>
-          <label for="power_units">Power units:</label>
-        </th>
-        <th>
-          {{ form.power_units }}
-        </th>
-      </tr>
+    <tr>
+      <th>
+        <label for="power_units">Power units:</label>
+      </th>
+      <th>
+        {{ form.power_units }}
+      </th>
+    </tr>
+
+    <tr>
+      <th>
+        <label for="aux_power_type">Aux Power Type:</label>
+      </th>
+      <th>
+        {{ form.aux_power_type }}
+      </th>
+    </tr>
   
-      <tr>
-        <th>
-          <label for="aux_power_type">Aux Power Type:</label>
-        </th>
-        <th>
-          {{ form.aux_power_type }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="aux_power_units">Aux Power Units:</label>
-        </th>
-        <th>
-          {{ form.aux_power_units }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="hamster_booster">Hamster Booster:</label>
-        </th>
-        <th>
-          {{ form.hamster_booster }}
-        </th>
-      </tr>
-      
-      <tr>
-        <th>
-          <label for="flag_color">Flag color:</label>
-        </th>
-        <th>
-          {{ form.flag_color(type="color") }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="flag_pattern">Flag Pattern:</label>
-        </th>
-        <th>
-          {{ form.flag_pattern }}
-        </th>
-      </tr>      
-    
-      <tr>
-        <th>
-          <label for="flag_color_secondary">Flag Color Secondary:</label>
-        </th>
-        <th>
-          {{ form.flag_color_secondary(type="color") }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="tyres">Tyres:</label>
-        </th>
-        <th>
-          {{ form.tyres(step="2") }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="qty_tyres">Number of Tyres:</label>
-        </th>
-        <th>
-          {{ form.qty_tyres }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="armour">Armour:</label>
-        </th>
-        <th>
-          {{ form.armour }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="attack">Attack:</label>
-        </th>
-        <th>
-          {{ form.attack }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="qty_attacks">Number of Attacks:</label>
-        </th>
-        <th>
-          {{ form.qty_attacks }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="fireproof">Fireproof:</label>
-        </th>
-        <th>
-          {{ form.fireproof }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="insulated">Insulated:</label>
-        </th>
-        <th>
-          {{ form.insulated }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="antibiotic">Antibiotic:</label>
-        </th>
-        <th>
-          {{ form.antibiotic }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="banging">Banging:</label>
-        </th>
-        <th>
-          {{ form.banging }}
-        </th>
-      </tr>
-    
-      <tr>
-        <th>
-          <label for="algo">Algo:</label>
-        </th>
-        <th>
-          {{ form.algo }}
-        </th>
-      </tr>
+    <tr>
+      <th>
+        <label for="aux_power_units">Aux Power Units:</label>
+      </th>
+      <th>
+        {{ form.aux_power_units }}
+      </th>
+    </tr>
   
-    </table>
+    <tr>
+      <th>
+        <label for="hamster_booster">Hamster Booster:</label>
+      </th>
+      <th>
+        {{ form.hamster_booster }}
+      </th>
+    </tr>
+    
+    <tr>
+      <th>
+        <label for="flag_color">Flag color:</label>
+      </th>
+      <th>
+        {{ form.flag_color(type="color") }}
+      </th>
+    </tr>
   
-  {{ form.submit(class="button") }}
+    <tr>
+      <th>
+        <label for="flag_pattern">Flag Pattern:</label>
+      </th>
+      <th>
+        {{ form.flag_pattern }}
+      </th>
+    </tr>      
   
+    <tr>
+      <th>
+        <label for="flag_color_secondary">Flag Color Secondary:</label>
+      </th>
+      <th>
+        {{ form.flag_color_secondary(type="color") }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="tyres">Tyres:</label>
+      </th>
+      <th>
+        {{ form.tyres(step="2") }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="qty_tyres">Number of Tyres:</label>
+      </th>
+      <th>
+        {{ form.qty_tyres }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="armour">Armour:</label>
+      </th>
+      <th>
+        {{ form.armour }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="attack">Attack:</label>
+      </th>
+      <th>
+        {{ form.attack }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="qty_attacks">Number of Attacks:</label>
+      </th>
+      <th>
+        {{ form.qty_attacks }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="fireproof">Fireproof:</label>
+      </th>
+      <th>
+        {{ form.fireproof }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="insulated">Insulated:</label>
+      </th>
+      <th>
+        {{ form.insulated }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="antibiotic">Antibiotic:</label>
+      </th>
+      <th>
+        {{ form.antibiotic }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="banging">Banging:</label>
+      </th>
+      <th>
+        {{ form.banging }}
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <label for="algo">Algo:</label>
+      </th>
+      <th>
+        {{ form.algo }}
+      </th>
+    </tr>
+
+  </table>
+
+  <div id="buttons">
+    {{ form.submit(class="button") }}
+  </div>
+
 </form>

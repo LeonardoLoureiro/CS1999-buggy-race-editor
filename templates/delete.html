@@ -9,9 +9,11 @@
 {% include "tables/display_table.html" %}
 
 <form name="delBuggyForm" action="/delete" method="POST">
-  {{ form.csrf_token }}
-  {{ form.buggy_id }}
-  {{ form.submit(class="button") }}
+  <div id="buttons">
+    {{ form.csrf_token }}
+    {{ form.buggy_id }}
+    {{ form.submit(class="button") }}
+  </div>
 </form>
 
 {% endblock %}
