@@ -2,73 +2,73 @@
 <style>
   /* First display the colours user has chosen */
   td.prim-col {
-      background-color: {{ buggy['flag_color'] }} ;
+      background-color: {{ buggy.flag_color }} ;
   } 
 
   td.sec-col {
-      background-color: {{ buggy['flag_color_secondary'] }} ;
+      background-color: {{ buggy.flag_color_secondary }} ;
   }
 
-  {% if buggy['flag_pattern'] == "plain" %}
+  {% if buggy.flag_pattern == "plain" %}
   /* Then render their chosen pattern */
   /* Plain is simlpy just the primary colour */
   .plain {
-      background-color: {{ buggy['flag_color'] }} ;
+      background-color: {{ buggy.flag_color }} ;
   }
 
-  {% elif buggy['flag_pattern'] == "vstripe" %}
+  {% elif buggy.flag_pattern == "vstripe" %}
     /* Vertical stripe, the primary colour being first of all stripe */
     .vstripe {
         background-image: repeating-linear-gradient(
         90deg,
-        {{ buggy['flag_color'] }},
-        {{ buggy['flag_color'] }} 0.5em,
-        {{ buggy['flag_color_secondary'] }} 0.5em,
-        {{ buggy['flag_color_secondary'] }} 1em
+        {{ buggy.flag_color }},
+        {{ buggy.flag_color }} 0.5em,
+        {{ buggy.flag_color_secondary }} 0.5em,
+        {{ buggy.flag_color_secondary }} 1em
         )
     }
 
-  {% elif buggy['flag_pattern'] == "hstripe" %}
+  {% elif buggy.flag_pattern == "hstripe" %}
     /* Horizontal stripes */
     .hstripe {
         background-image: repeating-linear-gradient(
         0deg,
-        {{ buggy['flag_color'] }},
-        {{ buggy['flag_color'] }} 0.5em,
-        {{ buggy['flag_color_secondary'] }} 0.5em,
-        {{ buggy['flag_color_secondary'] }} 1em
+        {{ buggy.flag_color }},
+        {{ buggy.flag_color }} 0.5em,
+        {{ buggy.flag_color_secondary }} 0.5em,
+        {{ buggy.flag_color_secondary }} 1em
         )
     }
 
-  {% elif buggy['flag_pattern'] == "dstripe" %}
+  {% elif buggy.flag_pattern == "dstripe" %}
   /* diagonal stripe, we've used this before - the sidebar panel's bg */
   .dstripe {
       background-image: repeating-linear-gradient(
       45deg,
-      {{ buggy['flag_color'] }},
-      {{ buggy['flag_color'] }} 0.5em,
-      {{ buggy['flag_color_secondary'] }} 0.5em,
-      {{ buggy['flag_color_secondary'] }} 1em
+      {{ buggy.flag_color }},
+      {{ buggy.flag_color }} 0.5em,
+      {{ buggy.flag_color_secondary }} 0.5em,
+      {{ buggy.flag_color_secondary }} 1em
       )
   }
   
-  {% elif buggy['flag_pattern'] == "checker" %}
+  {% elif buggy.flag_pattern == "checker" %}
   /* Checker bg */
   .checker {
-      background: repeating-conic-gradient({{ buggy['flag_color'] }} 0% 25%, 
-                                          {{ buggy['flag_color_secondary'] }} 0% 50%)
+      background: repeating-conic-gradient({{ buggy.flag_color }} 0% 25%, 
+                                          {{ buggy.flag_color_secondary }} 0% 50%)
                                           50% / 20px 20px
   }
   
-  {% elif buggy['flag_pattern'] == "spot" %}
+  {% elif buggy.flag_pattern == "spot" %}
   /* A circle the colour of the secondary colour, bg is primary */
   .spot {
-      background-color: {{ buggy['flag_color'] }} ;
+      background-color: {{ buggy.flag_color }} ;
       vertical-align: middle ;
   }
 
   .spot-circle {
-      background-color:{{ buggy['flag_color_secondary'] }};
+      background-color:{{ buggy.flag_color_secondary }};
       border-radius: 50% ;
       display: block;
       height: 20px;
@@ -88,49 +88,45 @@
   </thead>
 
   <tbody>
-    <tr>
-      <td>ID:</td>
-      <td> {{ buggy['id'] }} </td>
-    </tr>
 
     <tr>
       <td>Name:</td>
-      <td> {{ buggy['name'] }} </td>
+      <td> {{ buggy.name }} </td>
     </tr>
     
     <tr>
       <td>Number of Wheels:</td>
-      <td> {{ buggy['qty_wheels'] }} </td>
+      <td> {{ buggy.qty_wheels }} </td>
     </tr>
 
 
     <tr>
       <td>Power Type:</td>
-      <td> {{ buggy['power_type'] }} </td>
+      <td> {{ buggy.power_type }} </td>
     </tr>
 
 
     <tr>
       <td>Power Units:</td>
-      <td> {{ buggy['power_units'] }} </td>
+      <td> {{ buggy.power_units }} </td>
     </tr>
 
 
     <tr>
       <td>Aux Power Type:</td>
-      <td> {{ buggy['aux_power_type'] }} </td>
+      <td> {{ buggy.aux_power_type }} </td>
     </tr>
 
 
     <tr>
       <td>Aux Power Units:</td>
-      <td> {{ buggy['aux_power_units'] }} </td>
+      <td> {{ buggy.aux_power_units }} </td>
     </tr>
 
 
     <tr>
       <td>Hamster Booster:</td>
-      <td> {{ buggy['hamster_booster'] }} </td>
+      <td> {{ buggy.hamster_booster }} </td>
     </tr>
 
 
@@ -142,7 +138,7 @@
 
     <tr>
       <td>Flag Pattern:</td>
-      <td> {{ buggy['flag_pattern'] }} </td>
+      <td> {{ buggy.flag_pattern }} </td>
     </tr>
 
 
@@ -153,8 +149,8 @@
 
     <tr>
       <td>Rendering of flag:</td>
-      <td class="{{buggy['flag_pattern']}}"> 
-        {% if buggy['flag_pattern'] == "spot" %}
+      <td class="{{buggy.flag_pattern}}"> 
+        {% if buggy.flag_pattern == "spot" %}
           <span class="spot-circle"></span>
         {% endif %}
       </td>
@@ -163,73 +159,72 @@
 
     <tr>
       <td>Tyres:</td>
-      <td> {{ buggy['tyres'] }} </td>
+      <td> {{ buggy.tyres }} </td>
     </tr>
 
 
     <tr>
       <td>Number of Tyres:</td>
-      <td> {{ buggy['qty_tyres'] }} </td>
+      <td> {{ buggy.qty_tyres }} </td>
     </tr>
 
 
     <tr>
       <td>Armour:</td>
-      <td> {{ buggy['armour'] }} </td>
+      <td> {{ buggy.armour }} </td>
     </tr>
 
 
     <tr>
       <td>Attack:</td>
-      <td> {{ buggy['attack'] }} </td>
+      <td> {{ buggy.attack }} </td>
     </tr>
 
 
     <tr>
       <td>Number of Attacks:</td>
-      <td> {{ buggy['qty_attacks'] }} </td>
+      <td> {{ buggy.qty_attacks }} </td>
     </tr>
 
     <!--  Boolean vals are to be treated differently as, just leaving them by themselves like this will only display
           0s and 1s, not very user-understanding-friendly (if such an adjective even exists) -->
     <tr>
       <td>Fireproof?</td>
-      <td> {{ "Yes" if buggy['fireproof'] else "No" }} </td>
+      <td> {{ "Yes" if buggy.fireproof else "No" }} </td>
     </tr>
 
 
     <tr>
       <td>Insulated?</td>
-      <td> {{ "Yes" if buggy['insulated'] else "No" }} </td>
+      <td> {{ "Yes" if buggy.insulated else "No" }} </td>
     </tr>
 
 
     <tr>
       <td>Antibiotic?</td>
-      <td> {{ "Yes" if buggy['antibiotic'] else "No" }} </td>
+      <td> {{ "Yes" if buggy.antibiotic else "No" }} </td>
     </tr>
 
 
     <tr>
       <td>Banging?</td>
-      <td> {{ "Yes" if buggy['banging'] else "No" }} </td>
+      <td> {{ "Yes" if buggy.banging else "No" }} </td>
     </tr>
 
 
     <tr>
       <td>Algo:</td>
-      <td> {{ buggy['algo'] }} </td>
+      <td> {{ buggy.algo }} </td>
     </tr>
 
     <tr>
       <td>Cost:</td>
-      <td> {{ buggy['cost'] }} </td>
+      <td> {{ buggy.cost }} </td>
     </tr>
 
     <tr>
       <td>Mass:</td>
-      <td> {{ buggy['mass'] }}Kg </td>
+      <td> {{ buggy.mass }}Kg </td>
     </tr>
   </tbody>
-
 </table>

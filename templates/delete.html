@@ -3,15 +3,15 @@
 {% block content %}
 
 <h1>
-    Are you sure you want to delete this buggy?
+  Are you sure you want to delete this buggy?
 </h1>
 
 {% include "tables/display_table.html" %}
 
-<form action="/delete" method="post" >
-    <input type="hidden" name="buggy_id" value="{{buggy['id']}}">
-
-    <input type="submit" class="button">
+<form name="delBuggyForm" action="/delete" method="POST">
+  {{ form.csrf_token }}
+  {{ form.buggy_id }}
+  {{ form.submit(class="button") }}
 </form>
 
 {% endblock %}

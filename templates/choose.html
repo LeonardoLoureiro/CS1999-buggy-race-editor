@@ -10,14 +10,10 @@
 
     <form action="{{next_step}}" method="POST">
         {{ form.csrf_token }}
-        <select name="buggy_id">
-            {% for OP in options %}
-                <option value="{{OP[0]}}">{{OP[1]}}</option>
-            {% endfor %}
-        </select>
+        
+        {{ form.users_buggies }}
 
-
-        <input type="submit" id="select-butt" class="button">
+        {{ form.submit(class="button") }}
     </form>
 </div>
 

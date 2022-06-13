@@ -3,7 +3,7 @@ from secrets import choice
 from flask_wtf import FlaskForm
 from jsonschema import ValidationError
 from requests import session
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField, BooleanField, HiddenField
 # from wtforms.fields import ColorInput
 from wtforms.validators import (
     DataRequired,
@@ -86,6 +86,10 @@ class LoginForm(FlaskForm):
 
 class BuggyAtts(FlaskForm):
     """Buggy attributes Form."""
+
+    id = HiddenField(
+        'id'
+    )
 
     qty_wheels = IntegerField(
         'qty_wheels',
@@ -190,4 +194,23 @@ class BuggyAtts(FlaskForm):
         validators=[DataRequired(), Length(min=3, max=34)]
     )
 
-    submit = SubmitField('create')
+    submit = SubmitField('Submit')
+
+class UserBuggies(FlaskForm):
+    """Buggies under specific user's account"""
+
+    # since we cannot dynamically assign them here,
+    # we must create the obj first, then assign the options later.
+    users_buggies = SelectField(
+        'Buggies', 
+        choices=[]
+    )
+    
+    submit = SubmitField('Choose')
+
+
+class DelBuggy(FlaskForm):
+    """Form used specifically for deleting a buggy"""
+    buggy_id = HiddenField('buggy_id')
+
+    submit = SubmitField('Delete')

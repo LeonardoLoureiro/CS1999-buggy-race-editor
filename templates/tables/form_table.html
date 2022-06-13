@@ -1,6 +1,14 @@
 <form name="buggyForm" onsubmit="return main();" action="/{{form_dest}}" method="post">
     {{ form.csrf_token }}
+
+    {% if form.id %}
+      {{ form.id }}
+      {{ form.user_id }}
+    {% endif %}
+    
+
     <table class="form-table">
+      
       <tr>
         <th>
           <label for="name">Buggy Name:</label>
@@ -183,6 +191,6 @@
   
     </table>
   
-    {{ form.submit(class="button") }}
+  {{ form.submit(class="button") }}
   
-  </form>
+</form>

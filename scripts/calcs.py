@@ -28,7 +28,7 @@ BOOL = ["antibiotic", "banging", "fireproof", "insulated"]
 #   - hasmter boosters
 #   - power type
 #   - aux power type (a backup power type)
-def calc_total_cost_wtf(user_choices):
+def calc_total_cost_wtf(user_choices, att_costs):
     total_cost = 0
 
     # retrive json of all atts costs
@@ -38,7 +38,7 @@ def calc_total_cost_wtf(user_choices):
     att_costs = json.loads(data.decode('utf-8'))
 
     # calc bool vals
-    if user_choices.antibiotic.data:
+    if user_choices.antibiotic:
         total_cost += att_costs['special']['antibiotic']['cost']
     
     if user_choices.banging.data:
@@ -116,15 +116,8 @@ def calc_total_cost_wtf(user_choices):
 #   - attacks
 #   - power type
 #   - aux power type (a backup power type)
-def calc_total_mass_wtf(user_choices):
+def calc_total_mass_wtf(user_choices, att_costs):
     total_mass = 0
-
-    # retrive json of all atts weights (but in JSON called mass)
-    # then turn it into JSON format for easier use.
-    url_html = urllib.request.urlopen(JSON_DATA_URL)
-    data = url_html.read()
-    att_costs = json.loads(data.decode('utf-8'))
-
     
     # calc tyres
     user_num_tyres = user_choices.qty_tyres.data
@@ -176,8 +169,14 @@ def calc_total_mass_wtf(user_choices):
 
 
 def calc_cost_mass_wtf(buggy_wtform):
-    total_cost = calc_total_cost_wtf(buggy_wtform)
+    # retrive json of all atts weights (but in JSON called mass)
+    # then turn it into JSON format for easier use.
+    url_html = urllib.request.urlopen(JSON_DATA_URL)
+    data = url_html.read()
+    att_costs = json.loads(data.decode('utf-8'))
+
+    total_cost = calc_total_cost_wtf(buggy_wtform, att_costs)
     
-    total_mass = calc_total_mass_wtf(buggy_wtform)
+    total_mass = calc_total_mass_wtf(buggy_wtform, att_costs)
 
     return [total_cost, total_mass]

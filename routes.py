@@ -1,14 +1,13 @@
 
 from crypt import methods
-from genericpath import exists
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 import sqlite3 as sql
 
-from flask_login import login_required
+from flask_login import current_user, login_required
 import flask_login
 from jsonschema import ValidationError
 
-from forms import BuggyAtts
+from forms import DelBuggy, UserBuggies, BuggyAtts
 from models import Buggy
 
 try:
@@ -44,6 +43,8 @@ def home():
 @routes.route('/delete', methods=['GET', 'POST'])
 @login_required
 def delete():
+    form = DelBuggy()
+
     if request.method == 'GET':
         # if no id is given, then redirect to choose page, which will then return with an id,
         # allowing user to proceed.
@@ -52,46 +53,43 @@ def delete():
 
         buggy_id = str(request.args.get('buggy_id'))
 
-        try:
-            con = sql.connect(DATABASE_FILE)
-            con.row_factory = sql.Row
-            cur = con.cursor()
-            cur.execute("SELECT * FROM buggies WHERE id=(?) ;", (buggy_id,))
-            record = cur.fetchone() ;
+        current_user_id = flask_login.current_user.id
 
-        except Exception as e:
-            con.rollback()
+        buggy_vals = Buggy.query.filter_by(id=buggy_id, user_id=current_user_id).first()
 
-            return render_template("updated.html", msg=e)
+        form = DelBuggy(
+            buggy_id = buggy_id
+        )
 
-        finally:
-            con.close()        
+        if buggy_vals is None:
+            return render_template("errors/no_id.html", go_back="delete")
 
-        record = db_data_2_dict(record)
-
-        return render_template("delete.html", buggy=record)
+        return render_template(
+            "delete.html", 
+            buggy=buggy_vals,
+            form=form
+        )
     
+
     elif request.method == 'POST':
-        buggy_id = request.form['buggy_id']
+        # get buggy_id back
+        buggy_id = form.buggy_id.data
 
-        exec_str = "DELETE FROM buggies WHERE id=(?) ;"
-        
-        try:
-            con = sql.connect(DATABASE_FILE)
-            con.row_factory = sql.Row
-            cur = con.cursor()
-            cur.execute(exec_str, (buggy_id,))
-            con.commit()
+        # get logged in user's id
+        current_user_id = flask_login.current_user.id
 
-            msg = "Record successfully saved"
-        
-        except sql.Error as error:
-            con.rollback()
-            msg = "error in update operation"
+        try:    
+            # finally, search for their selected buggy and then deleted it from db table
+            delete_buggy = Buggy.query.filter_by(id=buggy_id, user_id=current_user_id).delete()
 
-        finally:
-            con.close()
-        
+            db.session.commit()
+            
+            msg="Buggy Deleted"
+
+        except:
+            db.session.rollback()
+            msg="Buggy could not be deleted"
+
         return render_template("updated.html", msg=msg)
 
 
@@ -101,31 +99,40 @@ def delete():
 @routes.route('/choose', methods=['GET', 'POST'])
 @login_required
 def choose():
-    # form = 
-
+    user_buggies = UserBuggies()
+    
     if request.method == 'GET':
         next_step = request.args.get('next_step')
-        con = sql.connect(DATABASE_FILE)
-        con.row_factory = sql.Row
-        cur = con.cursor()
-        cur.execute("SELECT id, name FROM buggies;")
-        record = cur.fetchall() ;
+        
+        current_user_id = flask_login.current_user.id
 
-        ids = []
-        # since record returns all data from a row, we must sanitise it
-        # before redering it.
-        for r in record:
-            ids.append( r ) # the first value of a row is the primary id key...
+        # get all buggies created that have current_user's account id
+        created_buggies = Buggy.query.filter_by(user_id=current_user_id).all()
 
-        return render_template('choose.html', 
-                                options=ids, 
+        # create list containing all buggy's names found in Query
+        created_buggies_ops_list = [bug.name for bug in created_buggies]
+
+        # pass all options back to the form's 'user_buggies' class obj,
+        # which is a SelectField.
+        user_buggies.users_buggies.choices = created_buggies_ops_list
+
+        return render_template('choose.html',
+                                form=user_buggies,
                                 next_step=url_for('routes.choose', next_step=next_step ))
     
     elif request.method == 'POST':
+        # get buggy id, which requires less changes to pass to other 'routes' than its entire name...#
+        chosen_buggy = Buggy.query.filter_by(
+            name=user_buggies.users_buggies.data, 
+            user_id=flask_login.current_user.id
+            ).first()
+
         next_step = request.args.get('next_step')
-        chosen_buggy = request.form['buggy_id']
-        
+        chosen_buggy = chosen_buggy.id
+
         try:
+            # json is only special because a function is already called json...
+            # the library itself, so function had to be called something else.
             if next_step == "json":
                 return redirect(url_for('routes.summary',
                                         buggy_id=chosen_buggy))
@@ -150,6 +157,8 @@ def choose():
 @routes.route('/edit', methods = ['POST', 'GET'])
 @login_required
 def edit():
+    form = BuggyAtts()
+
     if request.method == 'GET':
         # if no 'buggy_id' is passed, i.e., this is the first time 
         # accessing page, then it should first re-route to 'choose', which then 
@@ -161,81 +170,84 @@ def edit():
         # as normal, by retriving data from row and displaying it on edit page.
         buggy_id = str(request.args.get('buggy_id'))
 
-        # get bool values from DB, so HTML 'knows' whether to check their respective checkboxes or not
-        con = sql.connect(DATABASE_FILE)
-        con.row_factory = sql.Row
-        cur = con.cursor()
-        cur.execute("SELECT * FROM buggies WHERE id=(?) ;", (buggy_id,))
-        record = cur.fetchone() ;
+        current_user_id = flask_login.current_user.id
+
+        # fetch buggy's info from db
+        # the reason we ask for user's ID also is because otherwise, you could enter any buggy_id
+        # in the search bar and it would return the buggy's settings, even if they did not belong to user...
+        buggy_id_info = Buggy.query.filter_by(
+            user_id=current_user_id,
+            id=buggy_id
+        ).first()
 
         # if, whatever reason, no match is found then returns to "not found" page for buggy_id
-        # this can occur is user manually changes value on top of page.
-        if record is None:
+        # this can occur if user manually changes value on top of page.
+        if buggy_id_info is None:
             return render_template("errors/no_id.html", go_back="edit")
 
-        return render_template("edit.html", 
-                                power_type_ops=POWER_TYPE_OPS,
-                                flag_patts=FLAG_PATT,
-                                tyres=TYRES,
-                                armor=ARMOR,
-                                attacks=ATTACKS,
-                                ai=AI,
+        buggy_id_info = BuggyAtts(
+            id = buggy_id,
+            user_id = current_user_id,
+            qty_wheels = buggy_id_info.qty_wheels,
+            power_type = buggy_id_info.power_type,
+            power_units = buggy_id_info.power_units,
+            aux_power_type = buggy_id_info.aux_power_type,
+            aux_power_units = buggy_id_info.aux_power_units,
+            hamster_booster = buggy_id_info.hamster_booster,
+            flag_color = buggy_id_info.flag_color,
+            flag_pattern = buggy_id_info.flag_pattern,
+            flag_color_secondary = buggy_id_info.flag_color_secondary,
+            tyres = buggy_id_info.tyres,
+            qty_tyres = buggy_id_info.qty_tyres,
+            armour = buggy_id_info.armour,
+            attack = buggy_id_info.attack,
+            qty_attacks = buggy_id_info.qty_attacks,
+            fireproof = buggy_id_info.fireproof,
+            insulated = buggy_id_info.insulated,
+            antibiotic = buggy_id_info.antibiotic,
+            banging = buggy_id_info.banging,
+            algo = buggy_id_info.algo,
+            cost = buggy_id_info.cost,
+            mass = buggy_id_info.mass,
+            name = buggy_id_info.name
+        )
+
+        return render_template("edit.html",
                                 form_dest="edit",
-                                vals=record)
+                                form=buggy_id_info)
     
     elif request.method == 'POST':
-        msg=""
+        # get buggy's db row
+        buggy_id = form.id.data
 
-        # Said VARS can now be added onto the database with their relative
-        # JSON names.
+        current_user_id = flask_login.current_user.id        
+      
+        # calculate the price of the new buggy. 
+        cost, mass = calc_cost_mass_wtf(form)
+
+        new_vals = dict(form.data)
+
+        # now add cost and mass key/values to dict
+        new_vals['cost'] = cost
+        new_vals['mass'] = mass
+
+        # because the form dict has the 'submit' and 'csrf_token' keys,
+        # we must eliminate them before passing them to 'update', otherwise SQLite will not know what
+        # to do with it since db does not have those columns, and simply throw up an error.
+        del new_vals['csrf_token']
+        del new_vals['submit']
+
+        current_buggy = Buggy.query.filter_by(id=buggy_id, user_id=current_user_id).update(new_vals)
+
         try:
-            with sql.connect(DATABASE_FILE) as con:
-                cur = con.cursor()
-
-                buggy_id = request.form['id']
-
-
-                ## update the price of the new, edited buggy
-                # but first make a dict out of the form values
-                # It would be simple to use 'json.dumps' here, but we need 
-                # certain attributes to be integers so python can later use them
-                # for their respective calculations. 
-                buggy_atts = calc_total_cost(request.form)
-
-
-                # # now set the new cost and mass of buggie to db...
-                cost_mass_pair = calc_cost_mass(buggy_atts)
-                buggy_atts['cost'] = str(cost_mass_pair[0])
-                buggy_atts['mass'] = str(cost_mass_pair[1])
-                
-                str_atts = ', '.join(ATTRIBUTES_WHOLE[1:])
-                str_ques_marks = ', '.join('?' * len(ATTRIBUTES_WHOLE[1:]))
-
-                form_att_vals = [str(buggy_atts[a]) for a in ATTRIBUTES_WHOLE[1:]]
-
-                exec_str = "UPDATE buggies SET (%s) = (%s) WHERE id=(?) ;" % (str_atts, str_ques_marks)
-
-                form_att_vals += (buggy_id, )
-
-                cur.execute(exec_str, (form_att_vals))
-
-                con.commit()
-                msg = "Record successfully saved"
+            db.session.commit()
+            msg = "Buggy Updated!"
         
-        except Exception as ee:
-            con.rollback()
-            msg = "error in update operation"
-            msg = ee
-        
-        finally:
-            con.close()
+        except Exception as e:
+            msg = e
         
         return render_template("updated.html", msg = msg)
-
-
-
-
-
+        
 
 #------------------------------------------------------------
 # creating a buggy:
@@ -245,59 +257,55 @@ def edit():
 @routes.route('/create', methods=['GET', 'POST'])
 @login_required
 def create_buggy():
-    form = Buggy()
-    
+    form = set_defaults()
     if request.method == 'GET':
         
-        form = set_defaults()
         return render_template("create.html", form=form, form_dest="create")
     
     elif request.method == 'POST':
-        if form.validate_on_submit():
-            # first check no buggies exist with that same name within that particular user's account
-            # i.e., if that name is in the a row using user's id from 'users' table.
-            current_user_id = flask_login.current_user.id
+        # first check no buggies exist with that same name within that particular user's account
+        # i.e., if that name is in the a row using user's id from 'users' table.
+        current_user_id = flask_login.current_user.id
 
-            cost, mass = calc_cost_mass_wtf(form)
+        cost, mass = calc_cost_mass_wtf(form)
 
+        existing_buggy_name = Buggy.query.filter_by(name=form.name.data, user_id=current_user_id).first()
 
-            existing_buggy_name = Buggy.query.filter_by(name=form.name.data, user_id=current_user_id).first()
+        if existing_buggy_name:
+            raise ValidationError("That buggy name already exists, please use a different one.")
 
-            if existing_buggy_name:
-                raise ValidationError("That buggy name already exists, please use a different one.")
+        # now assing each variable to specific class attribute so it can be saved
+        buggy_class_vals = Buggy(
+            qty_wheels = form.qty_wheels.data,
+            power_type = form.power_type.data,
+            power_units = form.power_units.data,
+            aux_power_type = form.aux_power_type.data,
+            aux_power_units = form.aux_power_units.data,
+            hamster_booster = form.hamster_booster.data,
+            flag_color = form.flag_color.data,
+            flag_pattern = form.flag_pattern.data,
+            flag_color_secondary = form.flag_color_secondary.data,
+            tyres = form.tyres.data,
+            qty_tyres = form.qty_tyres.data,
+            armour = form.armour.data,
+            attack = form.attack.data,
+            qty_attacks = form.qty_attacks.data,
+            fireproof = form.fireproof.data,
+            insulated = form.insulated.data,
+            antibiotic = form.antibiotic.data,
+            banging = form.banging.data,
+            algo = form.algo.data,
+            cost = cost,
+            mass = mass,
+            name = form.name.data,
+            user_id = current_user_id
+        )
 
-            # now assing each variable to specific class attribute so it can be saved
-            buggy_class_vals = Buggy(
-                qty_wheels = form.qty_wheels.data,
-                power_type = form.power_type.data,
-                power_units = form.power_units.data,
-                aux_power_type = form.aux_power_type.data,
-                aux_power_units = form.aux_power_units.data,
-                hamster_booster = form.hamster_booster.data,
-                flag_color = form.flag_color.data,
-                flag_pattern = form.flag_pattern.data,
-                flag_color_secondary = form.flag_color_secondary.data,
-                tyres = form.tyres.data,
-                qty_tyres = form.qty_tyres.data,
-                armour = form.armour.data,
-                attack = form.attack.data,
-                qty_attacks = form.qty_attacks.data,
-                fireproof = form.fireproof.data,
-                insulated = form.insulated.data,
-                antibiotic = form.antibiotic.data,
-                banging = form.banging.data,
-                algo = form.algo.data,
-                cost = cost,
-                mass = mass,
-                name = form.name.data,
-                user_id = current_user_id
-            )
-
-            db.session.add(buggy_class_vals)
-            db.session.commit()
-            msg = "Created Successfully"
-        
-            return render_template("updated.html", msg = msg)
+        db.session.add(buggy_class_vals)
+        db.session.commit()
+        msg = "Created Successfully"
+    
+        return render_template("updated.html", msg = msg)
     
     return render_template("create.html", form=form, form_dest="create")
 
@@ -313,19 +321,16 @@ def show():
         return redirect(url_for("routes.choose", next_step="show"))
 
     buggy_id = request.args.get('buggy_id')
+    current_user_id = flask_login.current_user.id
 
-    con = sql.connect(DATABASE_FILE)
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    cur.execute("SELECT * FROM buggies WHERE id=(?) ;", (buggy_id,))
-    record = cur.fetchone() ;
+    buggy_vals = Buggy.query.filter_by(id=buggy_id, user_id=current_user_id).first()
 
     # if, whatever reason, no match is found then returns to "not found" page for buggy_id
     # this can occur is user manually changes value on top of page.
-    if record is None:
+    if buggy_vals is None:
         return render_template("errors/no_id.html", go_back="show")
     
-    return render_template("show.html", buggy=record)
+    return render_template("show.html", buggy=buggy_vals)
 
 
 #------------------------------------------------------------

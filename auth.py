@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint, render_template, redirect, url_for, request, flash
-from flask_login import login_user, logout_user, LoginManager
+from flask_login import current_user, login_user, logout_user, LoginManager, user_unauthorized
 from graphviz import render
 from jsonschema import ValidationError
 from forms import LoginForm, SignupForm
@@ -22,6 +22,11 @@ bcrypt = Bcrypt(app)
 #------------------------------------------------------------
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    # is user is already logged in, then just redirect to home
+    # as not to casue any problems regarding 2 different logged in accounts.
+    if current_user.is_authenticated:
+        return redirect( url_for('routes.home') )
+
     form = LoginForm()
 
     if request.method == 'GET':
@@ -45,6 +50,9 @@ def login():
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if current_user.is_authenticated:
+        return redirect( url_for('routes.home') )
+
     form = SignupForm()
     
     if request.method == 'GET':
