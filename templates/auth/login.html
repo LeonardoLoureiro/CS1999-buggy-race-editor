@@ -6,12 +6,10 @@
   </head>
 
   <body>
-    <div class="login-content">      
+    <div class="login-content">
       <h1> Login </h1>
-      
-      
 
-      <form name="loginForm" action="/login" method="post">
+      <form name="loginForm" action="/login{% if next_page %}?next={{next_page}}{% endif %}" method="post">
         {{ form.csrf_token }}
         <table>
           {% with messages = get_flashed_messages() %}

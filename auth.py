@@ -31,17 +31,27 @@ def login():
     form = LoginForm()
 
     if request.method == 'GET':
-        return render_template('auth/login.html', form=form)
+        next_page = request.args.get('next')
+        
+        return render_template('auth/login.html', form=form, next_page=next_page)
     
     elif request.method =='POST':
         if form.validate_on_submit():
             user = User.query.filter_by(email=form.email.data).first()
-
+            
+            next_page = request.args.get('next')
+            
             if user:
                 if bcrypt.check_password_hash(user.password, form.password.data):
                     login_user(user)
 
-                    return render_template('index.html')
+                    # if user tried to access page which needed logging in, then it'll redirect
+                    # to this page back once user is logged in.
+                    if next_page is not None:
+                        return redirect(next_page) 
+                    
+                    # otherwise then simply just redirect back to home
+                    return redirect( url_for('routes.home') )
                 
                 else:
                     flash("Email/Password is incorrect.")
