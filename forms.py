@@ -272,3 +272,14 @@ class ChangeEmail(FlaskForm):
     )
 
     submit = SubmitField('Change Email')
+
+class DelAccount(FlaskForm):
+    """Delete account of user Form."""
+    
+    confirm_password = PasswordField(
+        'Password', 
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Confirm your Password"}
+    )
+
+    submit = SubmitField('Delete Account')

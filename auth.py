@@ -2,16 +2,17 @@ from crypt import methods
 from flask import Flask, Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import current_user, login_required, login_user, logout_user, LoginManager, user_unauthorized
 import flask_login
-from forms import ChangeEmail, ChangePass, LoginForm, SignupForm
+from forms import ChangeEmail, ChangePass, DelAccount, LoginForm, SignupForm
 from flask_bcrypt import Bcrypt
+
 
 try:
     from main import db
-    from models import User
+    from models import User, Buggy
 
 except ImportError:
     from . import db
-    from .models import User
+    from .models import User, Buggy
 
 auth = Blueprint('auth', __name__, url_prefix="")
 app = Flask(__name__)
@@ -124,14 +125,62 @@ def logout():
 #-------------------------------------------------
 # user's profile page
 #-------------------------------------------------
-@auth.route('/profile', methods=['GET', 'POST'])
+@auth.route('/profile')
 @login_required
 def profile():
-    form = ChangePass()
+
+    return render_template('profile.html')
+
+
+#-------------------------------------------------
+# delete user's profile
+#-------------------------------------------------
+@auth.route('/profile/delete', methods=['GET', 'POST'])
+@login_required
+def delete_profile():
+    form = DelAccount()
 
     if request.method == 'GET':
+        # get all buggies under user's account to remind them buggies 
 
-        return render_template('profile.html')
+        return render_template('profile/delete.html', form=form)
+
+    elif request.method == 'POST':
+        # check password is correct
+        if not bcrypt.check_password_hash(flask_login.current_user.password, form.confirm_password.data):
+            flash('Password is incorrect')
+
+            return redirect( url_for('auth.delete_profile') )
+
+        # delete all buggies first
+        current_user_id = flask_login.current_user.id 
+
+        try:
+            buggies_own_user = Buggy.query.filter_by(user_id=current_user_id).delete()
+            db.session.commit()
+
+        except:
+            db.session.rollback()
+
+            return render_template('updated.html', msg="Buggies could not be deleted, cancelling account deletion")
+
+        # then delete their account
+        try:
+            user_account_del = User.query.filter_by(id=current_user_id).delete()
+            db.session.commit()
+        
+        except:
+            db.session.rollback()
+
+            return render_template(
+                'updated.html', 
+                msg="Account could not be deleted, cancelling account deletion, but buggies were.")
+
+        # log user out so nothing breaks
+        logout_user()
+
+        # then, finally, tells user everything has gone smoothly. 
+        return render_template( 'updated.html', msg="Your account has now been deleted." )
 
 
 #-------------------------------------------------
@@ -184,14 +233,6 @@ def change_email():
 
         except Exception as e:
             return render_template( 'updated.html', msg=e )
-
-
-
-
-
-
-
-        
 
 
 #-------------------------------------------------

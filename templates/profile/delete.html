@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2> Delete Your Account </h2>
+
+<form name="delAccount" action="{{ url_for('auth.delete_profile') }}" method="post">
+  {{ form.csrf_token }}
+
+  <table>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <tr class="flashes">
+            <th colspan="2">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            </th>
+        </tr>
+        {% endif %}
+    {% endwith %}
+  
+    <tr>
+      <th>
+        <label for="confirm_password">Please confirm your Password:</label>
+      </th>
+      
+      <th>
+        {{ form.confirm_password }}
+      </th>
+    </tr>
+  </table>
+
+  <div id="buttons">
+    {{ form.submit(class="button") }}
+  </div>
+</form>
+
+{% endblock %}
