@@ -6,10 +6,7 @@ from datetime import timedelta
 
 # First, RUN:
 #   - export FLASK_APP=main.py
-#   - python3
-#       - from main import db, create_app
-#       - import models
-#       - db.create_all(app=create_app())
+#
 # Then you can simply run flask normally:
 #   - flask run
 
