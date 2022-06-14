@@ -30,9 +30,7 @@
 
 <!-- below this point keep this section tag and paste in a <div> for every        -->
 <!-- task you attempted.                                                          -->
-
 <section class="cs1999-tasks">
-    <h1>Poster</h1>
     <div class="task">
         <h2>0-GET</h2>
         <p>
@@ -150,82 +148,164 @@
     <div class="task">
       <h2>2-EDIT Edit the record by loading its current values into the form</h2>
       <p>
-        <!-- sentence on _how_ you fixed it -->
+        Todo this, I decided to change the current way buggy information was being retrieved. From directly accessing 
+        the Database to using flask's own, built-in forms and models. With this, I could get values from Database, load it onto 
+        the form class and pass it as an argument to template. If the form is prefilled, then  it will show up on 
+        the HTML form.
       </p>
       <p>
-        <!-- sentence(s) on anything interesting/incomplete you did -->
+        To build a form, I needed to learn how to use the FlaskWTForms library and how to incoorporate it into 
+        my current setting. At first, I saw that I could make data retrieval easier by also adding in "models".
+        Remembering both were 2 separate things was somewhat hard to. 
       </p>
     </div>
     <div class="task">
       <h2>2-FORM Make the form better</h2>
       <p>
-        <!-- sentence on _how_ you fixed it -->
+        To make form better, I made sure that a single editing template was to be used, and every page which required it
+        was to use that one. This made sure that any future changes I made to the form, would also show up on every page 
+        that also used the editing form (the create new buggy and edit buggy pages).
       </p>
       <p>
-        <!-- sentence(s) on anything interesting/incomplete you did -->
+        I also included something called a CSRF Token which is used to protect that against attack which try to impersonate 
+        smoeone by submitting the form again. But with the token, the attacker needs to also guess said token, thus rendering
+        the attack useless. Although not needed in this project, I decided to include it simply because I thought it interesting.
       </p>
     </div>
     <div class="task">
       <h2>2-COST Calculate and save the game cost of the buggy</h2>
       <p>
-        <!-- sentence on _how_ you fixed it -->
+        I created a separate python file in which it contained functions to calculate the cost of a buggy. For this, however,
+        I needed to read the specs again to make sure I knew all the attributes which changed cost. After this, I had to find a 
+        way to get the associated costs of each attribute and how one attribute affected another, for example how the cost
+        of armor is affected if the number of wheels is greater than 4.
+
+        I also had to drop the current buggy table in order to add a cost column, as SQLite does not allow someone to create
+        a new column once a table is created.
       </p>
       <p>
-        <!-- sentence(s) on anything interesting/incomplete you did -->
+        While trying to retrieve costs of attributes which were applied to buggy, I tried to scrap the page of tabulated tables
+        which took me a week to try and find a way to turn the table of information into something easier to manipulate and 
+        retrieve - a dictionary. However, I later came to find out that a URL was avaiable in which a JSON format of the
+        table was already compiled. This gave me equal amounts of relief and anger as I had spent a significant amount of time
+        on the other solution. 
       </p>
     </div>
     <div class="task">
       <h2>2-RULES Add validation according to the game rules</h2>
       <p>
-        <!-- sentence on _how_ you fixed it -->
+        Although form validation is built-in into the FlaskWTForms, I decide to simply use javascript as it was easier to implement
+        (required the fewest changes, code-wise) and it was client-side, so, in theory, if this server were to be ever implemented 
+        in the real world, there would be less bandwidth used on the server-side.
       </p>
       <p>
-        <!-- sentence(s) on anything interesting/incomplete you did -->
+        To implement this I had to be careful with the naming of the variables of the buggy form, since FlaskWTForms rendered each 
+        HTML object, I could not edit the name of the form which is needed for JS validation - which I later found out to be
+        the forms' variable names. It also took me some time on how to implement the JS validation as in the beginning, the form kept
+        being submitted anyway, by-passing the JS script. I then found out it was the same problem which I ran into when implementing
+        CSS - the browser kept caching earlier, incomplete version of the JS script.
       </p>
     </div>
     <div class="task">
       <h2>3-ENV Switch between dev and production environments</h2>
       <p>
-        <!-- sentence on _how_ you fixed it -->
+        Before starting my flask server, I would simply type <code>export FLASK_ENV=development</code> onto the terminal.
+        Once I ran flask (<code>flask run</code>), debug mode would be turned on. If I wanted it in production mode, I would simply
+        stop running the server, type <code>FLASK_ENV=0</code> and run flask again.
       </p>
       <p>
-        <!-- sentence(s) on anything interesting/incomplete you did -->
+        Because I eventually changed file names, I also had to type <code>export FLASK_APP=main.py</code> before running the server.
       </p>
     </div>
     <div class="task">
       <h2>3-AUTOFILL Add auto-fill to the edit forms</h2>
       <p>
-        <!-- sentence on _how_ you fixed it -->
+        Because FlaskWTForms allows you to pre-fill form data, this was easy to implement. I just created a list of 
+        default values, and then loaded them into the form class.
       </p>
       <p>
-        <!-- sentence(s) on anything interesting/incomplete you did -->
+        Updating existing buggies proved to somewhat hard due to lack of documentation. But after some searching, 
+        I found out how to do it and it was easier than what seemed at first, it simply just needed a dictionary of the 
+        attributes as keys and new values as values of their respective keys.
       </p>
     </div>
     <div class="task">
       <h2>3-MULTI Allow different buggies to be created</h2>
       <p>
-        <!-- sentence on _how_ you fixed it -->
+        At this point, I had already created a database for buggies. But at the beggining I created a class for the table's 
+        schema I desired. All the attributes of the buggy, the unique ID each buggy would have, their name and the cost 
+        and mass of the buggy. With each attribute, I entered their respective data type and constraints, 
+        for example the name of the buggy can only be 35 characters long. Since certain attributes are preset, they do not
+        need to be as long, for example the longest string in the armor options is 12 characters.
       </p>
       <p>
-        <!-- sentence(s) on anything interesting/incomplete you did -->
+        Any time I decided to change anything in the database class, I needed to drop the table and recreate the table 
+        by running the following in the Python commandline: <code>from main import db, create_app</code>,
+        <code>import models</code>, <code>db.create_all(app=create_all())</code>.
       </p>
     </div>
     <div class="task">
       <h2>3-DEL Allow buggies to be deleted</h2>
       <p>
-        <!-- sentence on _how_ you fixed it -->
-      </p>
-      <p>
-        <!-- sentence(s) on anything interesting/incomplete you did -->
+        Deleting a row of the Database was easy, as it only needed a method to be called after calling the specific row, then saving
+        the new Database changes.
       </p>
     </div>
     <div class="task">
       <h2>3-FLAG Display the pennant graphically</h2>
       <p>
-        <!-- sentence on _how_ you fixed it -->
+        I decided to add IF-ELIF blocks on the <code>display.html</code>, where, depending on the pattern user chose, only the specific
+        CSS style is rendered. The class of the table cell is set to their correspoding flag pattern, with the special case 
+        of <code>spot</code>, which also adds in a div inside it so the circle can be rendered.  
       </p>
       <p>
-        <!-- sentence(s) on anything interesting/incomplete you did -->
+        It took me a while to find a solution on how to render the spot pattern, I then decided that it could only be done with 
+        two parts: the background being the main the colour, and the circle in the middle as the secondary colour. 
+      </p>
+    </div>
+    <div class="task">
+      <h2>3-TESTS Write some tests</h2>
+      <p>
+        With testing each new changes, I would create a function and pass the testing arguments, the function would return
+        the values and then I would compare with what it would return. 
+      </p>
+    </div>
+    <div class="task">
+      <h2>4-USERS Add users (and sessions) so you know who is editing a buggy</h2>
+      <p>
+        I decided to use Flask's builtin flask-login library, which allows for use of keeping track of current 
+        logged in users and will prove to be useful later on the project.
+        I created a model for the user table, it would hold their email, password, first and last name. 
+        On top of which I also created a signup form for the signup page.
+      </p>
+    </div>
+    <div class="task">
+      <h2>4-REGISTER Make a new user</h2>
+      <p>
+        Before submitting to Database, the server checks that the password typed twice matches, 
+        it also checks if that email is already in use in another account. Once everything is validated,
+        the data is then added to the user's database.
+      </p>
+    </div>
+    <div class="task">
+      <h2>4-OWNER A buggy belongs to a user</h2>
+      <p>
+        I made sure to add the "@login_required" decorator to the create/edit/show/delete pages,
+        otherwise each of those routes would break. I also had to add another column to the buggy 
+        table called "user_id", so that only logged in user's could only access their own buggies, 
+        even if they know another buggies' id.
+      </p>
+      <p>
+        When adding the new column, I had to delete and recreate a new table in the database.
+      </p>
+    </div>
+    <div class="task">
+      <h2>4-PASS Add password protection to the users</h2>
+      <p>
+        Alongside with email, users must also provide a password when creating and logging into an account.
+        I used bcrypt library as it had the most documentation avaiable and easier to use. When adding a new user
+        the password entered must be hashed, as is best practice. Additionally, when logging in, to check 
+        if password is correct, the method <code>check_password_hash</code> must be used.
       </p>
     </div>
 
