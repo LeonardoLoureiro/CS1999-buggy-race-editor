@@ -1,11 +1,10 @@
 
 from crypt import methods
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
 import sqlite3 as sql
 
 from flask_login import current_user, login_required
 import flask_login
-from jsonschema import ValidationError
 
 from forms import DelBuggy, UserBuggies, BuggyAtts
 from models import Buggy
@@ -272,7 +271,9 @@ def create_buggy():
         existing_buggy_name = Buggy.query.filter_by(name=form.name.data, user_id=current_user_id).first()
 
         if existing_buggy_name:
-            raise ValidationError("That buggy name already exists, please use a different one.")
+            flash("That buggy name already exists, please use a different one.")
+
+            return redirect( url_for('routes.create') )
 
         # now assing each variable to specific class attribute so it can be saved
         buggy_class_vals = Buggy(

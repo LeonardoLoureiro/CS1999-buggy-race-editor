@@ -2,8 +2,6 @@
 import email
 from secrets import choice
 from flask_wtf import FlaskForm
-from jsonschema import ValidationError
-from requests import session
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField, BooleanField, HiddenField
 # from wtforms.fields import ColorInput
 from wtforms.validators import (
