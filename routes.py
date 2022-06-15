@@ -9,27 +9,18 @@ import flask_login
 from forms import DelBuggy, UserBuggies, BuggyAtts
 from models import Buggy
 
-try:
-    from scripts.scrapper import *
-    from scripts.calcs import *
-    from consts import *
-    from scripts.form_edit import *
-
-except ImportError:
-    from .scripts.scrapper import *
-    from .scripts.calcs import *
-    from .consts import *
-    from .scripts.form_edit import *
+from scripts.scrapper import *
+from scripts.calcs import *
+from consts import *
+from scripts.form_edit import *
 
 # this essentially makes it so this file is 'independant' and can simply just be 'imported'
 # to the main file.
 routes = Blueprint('routes', __name__)
 
-try:
-    from main import db
 
-except ImportError:
-    from . import db
+from app import db
+
 
 #------------------------------------------------------------
 # the index page

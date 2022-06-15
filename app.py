@@ -4,20 +4,15 @@ from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
 from datetime import timedelta
 
-# First, RUN:
-#   - export FLASK_APP=main.py
-#
-# Then you can simply run flask normally:
+
+# To run webserver:
 #   - flask run
+
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
-try:
-    from models import User
-
-except ImportError:
-    from .models import User
+from models import User
 
 
 def create_app():

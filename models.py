@@ -1,8 +1,4 @@
-try:
-    from main import db
-
-except ImportError:
-    from . import db
+from app import db
 
 from flask_login import UserMixin
 

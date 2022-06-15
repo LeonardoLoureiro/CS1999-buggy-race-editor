@@ -1,11 +1,8 @@
 from forms import BuggyAtts
 
 
-try:
-    from consts import ATTRIBUTES, ATTRIBUTES_BOOL, ATTRIBUTES_WHOLE, NUM_VALS, DEFAULT_VALS
+from consts import ATTRIBUTES, ATTRIBUTES_BOOL, ATTRIBUTES_WHOLE, NUM_VALS, DEFAULT_VALS
 
-except ImportError:
-    from ..consts import ATTRIBUTES, ATTRIBUTES_BOOL, ATTRIBUTES_WHOLE, NUM_VALS, DEFAULT_VALS
     
 # take data from form of a page, and turn it into a dict,
 # with each attributes correct data type (e.g., number of wheel should be integers.)

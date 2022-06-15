@@ -12,11 +12,8 @@ from wtforms.validators import (
 )
 
 
-try:
-    from consts import POWER_TYPE_OPS, FLAG_PATT, TYRES, ARMOR, ATTACKS, AI
+from consts import POWER_TYPE_OPS, FLAG_PATT, TYRES, ARMOR, ATTACKS, AI
 
-except ImportError:
-    from .consts import POWER_TYPE_OPS, FLAG_PATT, TYRES, ARMOR, ATTACKS, AI
 
 class SignupForm(FlaskForm):
     """User Sign-up Form."""

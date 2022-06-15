@@ -5,14 +5,8 @@ import flask_login
 from forms import ChangeEmail, ChangePass, DelAccount, LoginForm, SignupForm
 from flask_bcrypt import Bcrypt
 
-
-try:
-    from main import db
-    from models import User, Buggy
-
-except ImportError:
-    from . import db
-    from .models import User, Buggy
+from app import db
+from models import User, Buggy
 
 auth = Blueprint('auth', __name__, url_prefix="")
 app = Flask(__name__)
