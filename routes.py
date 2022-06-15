@@ -1,7 +1,6 @@
 
 from crypt import methods
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
-import sqlite3 as sql
 
 from flask_login import current_user, login_required
 import flask_login
