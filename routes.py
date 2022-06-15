@@ -380,20 +380,41 @@ def summary():
     
     buggy_id = str(request.args.get('buggy_id'))
 
-    con = sql.connect(DATABASE_FILE)
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    cur.execute("SELECT * FROM buggies WHERE id=(?) LIMIT 1", (buggy_id,))
-
-    buggy = cur.fetchone()
+    buggy = Buggy.query.filter_by(id=buggy_id, user_id=flask_login.current_user.id).first()
 
     # if, whatever reason, no match is found then returns to "not found" page for buggy_id
     # this can occur is user manually changes value on top of page.
     if buggy is None:
         return render_template("errors/no_id.html", go_back="json")
 
-    buggies = dict(zip([column[0] for column in cur.description], buggy)).items()
-    return jsonify({ key: val for key, val in buggies if (val != "" and val is not None) })
+    
+    json_buggy = {
+        "id": buggy.id,
+        "qty_wheels": buggy.qty_wheels,
+        "power_type": buggy.power_type,
+        "power_units": buggy.power_units,
+        "aux_power_type": buggy.aux_power_type,
+        "aux_power_units": buggy.aux_power_units,
+        "hamster_booster": buggy.hamster_booster,
+        "flag_color": buggy.flag_color,
+        "flag_pattern": buggy.flag_pattern,
+        "flag_color_secondary": buggy.flag_color_secondary,
+        "tyres": buggy.tyres,
+        "qty_tyres": buggy.qty_tyres,
+        "armour": buggy.armour,
+        "attack": buggy.attack,
+        "qty_attacks": buggy.qty_attacks,
+        "fireproof": buggy.fireproof,
+        "insulated": buggy.insulated,
+        "antibiotic": buggy.antibiotic,
+        "banging": buggy.banging,
+        "algo": buggy.algo,
+        "cost": buggy.cost,
+        "mass": buggy.mass,
+        "name": buggy.name
+    }    
+
+    return jsonify(json_buggy)
 
 
 
